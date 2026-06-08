@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scan Results</title>
+    <link rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>SCAN RESULTS</h1>
+    </div>
+<div class="stats-grid">
+
+    <div class="stat-card">
+        <h3> Hostname</h3>
+        <p>{{ report["hostname"] }}</p>
+    </div>
+
+    <div class="stat-card">
+        <h3> IP Address</h3>
+        <p>{{ report["ip"] }}</p>
+    </div>
+    <div class="stat-card">
+        <h3> Host Status</h3>
+        <p>{{ report["host_status"] }}</p>
+    </div>
+    <div class="stat-card">
+        <h3> Reverse DNS</h3>
+        <p>{{ report["reverse_dns"] }}</p>
+    </div>
+
+    <div class="stat-card">
+        <h3> Open Ports</h3>
+        <p>{{ report["open_ports"]|length }}</p>
+    </div>
+    <div class="stat-card">
+        <h3> Scan Time</h3>
+        <p>{{ report["scan_time"] }}</p>
+    </div>
+    <div class="status-card">
+
+    <h3>
+         Scan Complete
+    </h3>
+
+</div>
+
+</div>
+    <!-- <div class="card">
+
+        <h2>Target Information</h2>
+
+        <p><strong>Hostname:</strong> {{ report["hostname"] }}</p>
+        <p><strong>IP Address:</strong> {{ report["ip"] }}</p>
+        <p><strong>Reverse DNS:</strong> {{ report["reverse_dns"] }}</p>
+        <p><strong>Total Open Ports:</strong>{{ report["open_ports"]|length }}</p>
+        <p><strong>Scan Time:</strong>{{ report["scan_time"] }}</p>
+
+
+    </div> -->
+
+    
+
+        <div class="card">
+
+    <h2> Open Ports</h2>
+
+    <table>
+
+        <tr>
+            <th>Port</th>
+            <th>Service</th>
+            <th>Server</th>
+            <th>Technology</th>
+            <th>Content Type</th>
+            <th>Length</th>
+        </tr>
+
+        {% for port, info in report["open_ports"].items() %}
+
+        <tr>
+
+            <td>{{ port }}</td>
+
+            <td>
+
+                {% if info["service"] == "HTTPS" %}
+                    <span class="https-badge">
+                        {{ info["service"] }}
+                    </span>
+
+                {% else %}
+                    <span class="http-badge">
+                        {{ info["service"] }}
+                    </span>
+                {% endif %}
+
+            </td>
+
+            <td>
+                {{ info["headers"].get("Server", "Unknown") }}
+            </td>
+             <td>{{ info["technology"] }}</td>
+            <td>
+                {{ info["headers"].get("Content-Type", "N/A") }}
+            </td>
+
+            <td>
+                {{ info["headers"].get("Content-Length", "N/A") }}
+            </td>
+
+        </tr>
+
+        <tr>
+            <td colspan="5">
+
+                <details>
+
+                    <summary>
+                        View Headers
+                    </summary>
+
+                    <div class="header-box">
+
+                        {% for key, value in info["headers"].items() %}
+
+                            <p>
+                                <strong>{{ key }}</strong> :
+                                {{ value }}
+                            </p>
+
+                        {% endfor %}
+
+                    </div>
+
+                </details>
+
+            </td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+
+    </div>
+
+   
+    <div class="centered-card">
+        <a href="/">Run Another Scan</a>
+    </div>
+    <div class="centered-card">
+
+    <button onclick="downloadReport()">Download JSON Report</button>
+
+</div>
+
+
+
+</div>
+<script>
+function downloadReport() {
+
+    const data = JSON.parse('{{ report | tojson | safe }}');
+
+    const blob = new Blob(
+        [JSON.stringify(data, null, 2)],
+        { type: "application/json" }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "cyber_scan_report.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(url);
+}
+</script>
+
+</body>
+<footer>
+
+    CyberSentinel v1.0
+
+    <br>
+
+    Port Scanning • Banner Analysis • Reverse DNS
+
+</footer>
+</html>

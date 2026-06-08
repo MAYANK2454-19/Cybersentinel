@@ -1,5 +1,4 @@
 import socket
-from cyber_app.cyber_scanner.scanner.dns_lookup import get_ip
 def port_scan(ip :str ,hostname : str ,start_port : int , end_port : int, all_ports : list) -> list[int]:
     try :
         open_ports = []
