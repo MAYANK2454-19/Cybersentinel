@@ -162,10 +162,16 @@
 
 
 </div>
+<script type="application/json" id="report-data">
+    {{ report | tojson }}
+</script>
 <script>
 function downloadReport() {
 
-    const data = JSON.parse('{{ report | tojson | safe }}');
+   
+
+    const raw = document.getElementById("report-data").textContent;
+    const data = JSON.parse(raw);
 
     const blob = new Blob(
         [JSON.stringify(data, null, 2)],
@@ -177,12 +183,14 @@ function downloadReport() {
     const a = document.createElement("a");
     a.href = url;
     a.download = "cyber_scan_report.json";
+
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
 
     URL.revokeObjectURL(url);
 }
+
 </script>
 
 </body>
