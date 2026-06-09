@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 from scanner.scanner import run_scan
+import os
 
 app = Flask(__name__)
 
