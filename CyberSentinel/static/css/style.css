@@ -35,6 +35,7 @@ body {
     border: 1px solid #00ff88;
     box-shadow: 0 0 15px rgba(0,255,136,0.1); 
     
+    
     /* background:#111827;
     border:1px solid #00ff88;
     padding:15px;
@@ -244,4 +245,26 @@ footer{
     margin-bottom:25px;
     text-align:center;
     border-radius:12px;  */
+}
+table{
+    width:100%;
+    table-layout:fixed;
+}
+
+td{
+    word-wrap:break-word;
+    overflow-wrap:break-word;
+    max-width:250px;
+}
+.header-row{
+    margin:8px 0;
+    padding:8px;
+    border-bottom:1px solid #333;
+}
+
+.header-row span{
+    display:block;
+    margin-top:4px;
+    word-wrap:break-word;
+    overflow-wrap:break-word;
 }

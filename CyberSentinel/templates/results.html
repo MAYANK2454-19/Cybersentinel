@@ -101,15 +101,15 @@
             </td>
 
             <td>
-                {{ info["headers"].get("Server", "Unknown") }}
+                {{ info["headers"].get("server", "Unknown") }}
             </td>
              <td>{{ info["technology"] }}</td>
             <td>
-                {{ info["headers"].get("Content-Type", "N/A") }}
+                {{ info["headers"].get("content-type", "N/A") }}
             </td>
 
             <td>
-                {{ info["headers"].get("Content-Length", "N/A") }}
+                {{ info["headers"].get("content-length", "N/A") }}
             </td>
 
         </tr>
@@ -127,10 +127,10 @@
 
                         {% for key, value in info["headers"].items() %}
 
-                            <p>
-                                <strong>{{ key }}</strong> :
-                                {{ value }}
-                            </p>
+                            <div class="header-row">
+    <strong>{{ key }}</strong>
+    <span>{{ value }}</span>
+</div>
 
                         {% endfor %}
 

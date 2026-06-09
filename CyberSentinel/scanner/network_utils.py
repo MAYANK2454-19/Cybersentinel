@@ -30,7 +30,7 @@ def get_banner(ip,hostname, port):
             return None 
         msg = f"HEAD / HTTP/1.1\r\nHost: {hostname}\r\n\r\n"
         sock=socket.socket()
-        sock.settimeout(1)
+        sock.settimeout(3)
         result = sock.connect_ex((ip,port))
         if result == 0 :
             sock.send(msg.encode())
@@ -43,3 +43,5 @@ def get_banner(ip,hostname, port):
     except socket.gaierror :
         print(f"{hostname} is not a valid hostname.")
         return None
+    except (socket.timeout, TimeoutError):
+        return ""
