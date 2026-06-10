@@ -204,6 +204,253 @@ The IP Geolocation Tool allows users to gather geographical and network-related 
 
 This tool is designed for learning networking, web development, and cybersecurity concepts. It helps users understand how IP addresses are mapped to geographical regions and how network ownership information is publicly available.
 
+## Subdomain Finder
+
+### Overview
+
+The Subdomain Finder module helps identify subdomains associated with a target domain. It combines Certificate Transparency logs from crt.sh with DNS validation to discover live and accessible subdomains.
+
+This tool is useful for reconnaissance, attack surface mapping, asset discovery, and understanding an organization's publicly exposed infrastructure.
+
+### Features
+
+* Certificate Transparency log enumeration using crt.sh
+* Extraction and cleanup of discovered subdomains
+* Removal of duplicate entries
+* DNS validation of discovered subdomains
+* Live subdomain detection
+* Multi-threaded validation for improved performance
+* Clean web-based results dashboard
+
+### Technologies Used
+
+* Python
+* Flask
+* Requests
+* Socket Programming
+* ThreadPoolExecutor
+* HTML
+* CSS
+
+### Workflow
+
+1. User enters a target domain.
+2. CyberSentinel queries crt.sh Certificate Transparency logs.
+3. Extracted subdomains are cleaned and normalized.
+4. Each subdomain is validated through DNS resolution.
+5. Live subdomains are displayed in the results dashboard.
+
+### Example Output
+
+Target Domain:
+microsoft.com
+
+Results:
+
+* login.microsoft.com
+* portal.microsoft.com
+* support.microsoft.com
+* teams.microsoft.com
+* outlook.microsoft.com
+
+### Educational Concepts
+
+* Certificate Transparency Logs
+* DNS Resolution
+* Asset Discovery
+* Multi-threading
+* Web Reconnaissance
+* Network Enumeration
+
+## DNS Enumeration
+
+### Overview
+
+The DNS Enumeration module retrieves publicly available DNS records associated with a domain. These records provide valuable information about hosting infrastructure, mail services, name servers, and domain configuration.
+
+This information is commonly used during reconnaissance and network investigations.
+
+### Features
+
+* A Record Lookup
+* AAAA Record Lookup
+* MX Record Lookup
+* NS Record Lookup
+* TXT Record Lookup
+* Clean tabular presentation
+* Web-based interface
+
+### Technologies Used
+
+* Python
+* Flask
+* dnspython
+* HTML
+* CSS
+
+### Workflow
+
+1. User enters a target domain.
+2. CyberSentinel queries DNS servers.
+3. Multiple record types are collected.
+4. Results are displayed in an organized format.
+
+### Supported DNS Records
+
+#### A Records
+
+Maps a domain name to an IPv4 address.
+
+Example:
+
+google.com → 142.250.183.238
+
+#### AAAA Records
+
+Maps a domain name to an IPv6 address.
+
+#### MX Records
+
+Identifies mail servers responsible for handling email.
+
+#### NS Records
+
+Shows authoritative name servers for the domain.
+
+#### TXT Records
+
+Contains metadata such as SPF, DKIM, and verification records.
+
+### Example Output
+
+Domain:
+google.com
+
+A Records:
+142.250.183.238
+
+MX Records:
+smtp.google.com
+
+NS Records:
+ns1.google.com
+ns2.google.com
+ns3.google.com
+ns4.google.com
+
+TXT Records:
+v=spf1 include:_spf.google.com ~all
+
+### Educational Concepts
+
+* DNS Architecture
+* Resource Records
+* Email Infrastructure
+* SPF Records
+* Domain Resolution Process
+* Network Enumeration
+
+## WHOIS Lookup
+
+### Overview
+
+The WHOIS Lookup module retrieves publicly available registration information about a domain. It provides ownership, registrar, registration dates, expiration details, and domain infrastructure information.
+
+WHOIS data is widely used for domain investigations, asset attribution, threat intelligence, and cybersecurity reconnaissance.
+
+### Features
+
+* Domain Registration Information
+* Registrar Details
+* Creation Date
+* Expiration Date
+* Last Updated Date
+* Name Server Enumeration
+* Structured Results Dashboard
+
+### Technologies Used
+
+* Python
+* Flask
+* python-whois
+* HTML
+* CSS
+
+### Workflow
+
+1. User enters a target domain.
+2. CyberSentinel queries WHOIS databases.
+3. Registration details are collected.
+4. Results are formatted and displayed.
+
+### Information Retrieved
+
+#### Domain Name
+
+Registered domain identifier.
+
+#### Registrar
+
+Organization responsible for domain registration.
+
+#### Creation Date
+
+Date when the domain was first registered.
+
+#### Expiration Date
+
+Date when the domain registration expires.
+
+#### Updated Date
+
+Last modification date of the domain registration.
+
+#### Name Servers
+
+Authoritative DNS servers associated with the domain.
+
+### Example Output
+
+Domain:
+google.com
+
+Registrar:
+MarkMonitor, Inc.
+
+Created:
+15-09-1997
+
+Expires:
+14-09-2028
+
+Updated:
+09-09-2019
+
+Name Servers:
+ns1.google.com
+ns2.google.com
+ns3.google.com
+ns4.google.com
+
+### Educational Concepts
+
+* Domain Registration Process
+* Internet Governance
+* Domain Ownership
+* Registrar Infrastructure
+* Name Server Architecture
+* Cyber Threat Intelligence
+
+### Use Cases
+
+* Asset Investigation
+* Threat Intelligence
+* Security Research
+* Domain Verification
+* Infrastructure Analysis
+* Reconnaissance Operations
+
+
 
 # Project Structure
 
@@ -218,16 +465,38 @@ CyberSentinel/
 ├── ping_tool/
 │   └── ping.py
 │
-├──ip_geolocation/
-│      └── geo.py
+├── ip_geolocation/
+│   └── geo.py
+│
+├── subdomain_finder/
+│   └── subfinder.py
+│
+├── whois_lookup/
+│   └── whois_lookup.py
+│
+├── dns_tool/
+│   └── dns_lookup.py
+│
 ├── templates/
 │   ├── dashboard.html
+│   │
 │   ├── portscan.html
 │   ├── result.html
+│   │
 │   ├── ping.html
-│   └── ping_result.html
-|   ├── geo_index.html
-│   └── geo_result.html
+│   ├── ping_result.html
+│   │
+│   ├── geo_index.html
+│   ├── geo_result.html
+│   │
+│   ├── subdomain_index.html
+│   ├── subdomain_result.html
+│   │
+│   ├── whois_index.html
+│   ├── whois_result.html
+│   │
+│   ├── dns_index.html
+│   └── dns_result.html
 │
 ├── static/
 │   └── css/
@@ -235,7 +504,11 @@ CyberSentinel/
 │
 ├── requirements.txt
 │
-└── README.md
+├── README.md
+│
+└── .gitignore
+```
+
 ```
 
 # Installation
