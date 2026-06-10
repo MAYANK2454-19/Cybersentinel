@@ -4,6 +4,7 @@ from scanner.scanner import run_scan
 from ping_tool.ping import ping_host
 from subdomain_finder.subfinder import find_subdomains
 from whois_tool.whois_lookup import whois_lookup
+from dns_tool.dns_lookup import dns_lookup
 
 import os
 
@@ -101,6 +102,24 @@ def whois_page():
 
     return render_template(
         "whois_index.html"
+    )
+
+@app.route("/dns", methods=["GET", "POST"])
+def dns_page():
+
+    if request.method == "POST":
+
+        domain = request.form["domain"]
+
+        report = dns_lookup(domain)
+
+        return render_template(
+            "dns_result.html",
+            report=report
+        )
+
+    return render_template(
+        "dns_index.html"
     )
 
 if __name__ == "__main__":

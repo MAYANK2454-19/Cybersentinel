@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>DNS Results</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static',
+filename='css/style.css') }}">
+
+</head>
+<body>
+
+<div class="container">
+
+<div class="header">
+
+<h1>DNS REPORT</h1>
+
+</div>
+
+<div class="card">
+
+<h2>Domain</h2>
+
+<p>{{ report["domain"] }}</p>
+
+</div>
+
+<div class="card">
+
+<h2>A Records</h2>
+
+<ul>
+
+{% for record in report["A"] %}
+
+<li>{{ record }}</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+<div class="card">
+
+<h2>AAAA Records</h2>
+
+<ul>
+
+{% for record in report["AAAA"] %}
+
+<li>{{ record }}</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+<div class="card">
+
+<h2>MX Records</h2>
+
+<ul>
+
+{% for record in report["MX"] %}
+
+<li>{{ record }}</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+<div class="card">
+
+<h2>NS Records</h2>
+
+<ul>
+
+{% for record in report["NS"] %}
+
+<li>{{ record }}</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+<div class="card">
+
+<h2>TXT Records</h2>
+
+<ul>
+
+{% for record in report["TXT"] %}
+
+<li>{{ record }}</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+<div class="action-buttons">
+
+    <a href="/ping" class="action-btn">
+        Run Another Ping
+    </a>
+
+    <a href="/" class="action-btn">
+        Dashboard
+    </a>
+
+    <button class="action-btn" onclick="downloadReport()">
+        Download Report
+    </button>
+
+</div>
+
+</div>
+
+</body>
+<script type="application/json" id="report-data">
+{{ report | tojson }}
+</script>
+
+<script>
+function downloadReport(){
+
+    const raw = document.getElementById("report-data").textContent;
+    const data = JSON.parse(raw);
+
+    const blob = new Blob(
+        [JSON.stringify(data, null, 2)],
+        {type:"application/json"}
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "ping_report.json";
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(url);
+}
+</script>
+<footer>
+
+    CyberSentinel v1.0
+
+    <br>
+
+    DNS Enumeration • A Records • MX Records • NS Records • TXT Records
+
+</footer>
+</html>
