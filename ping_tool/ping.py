@@ -1,53 +1,78 @@
-import subprocess
+import socket
+import time
+
 
 def ping_host(hostname: str) -> dict:
-    ip = None
-    stats = []
-    rtt_stats = []
 
     try:
-        output = subprocess.run(
-            ["ping", "-c", "4", hostname],
-            capture_output=True,
-            text=True,
-            timeout=10
-    )
-    except Exception as e:
+        ip = socket.gethostbyname(hostname)
+
+        latencies = []
+
+        packets_sent = 4
+        packets_received = 0
+
+        for _ in range(4):
+
+            start = time.time()
+
+            sock = socket.create_connection(
+                (hostname, 80),
+                timeout=5
+            )
+
+            end = time.time()
+
+            sock.close()
+
+            latency = round((end - start) * 1000, 3)
+
+            latencies.append(latency)
+
+            packets_received += 1
+
+        packet_loss = (
+            (packets_sent - packets_received)
+            / packets_sent
+        ) * 100
+
+        rtt_min = min(latencies)
+        rtt_avg = round(sum(latencies) / len(latencies), 3)
+        rtt_max = max(latencies)
+
+        jitter = round(
+            max(latencies) - min(latencies),
+            3
+        )
+
+        total_time = round(sum(latencies), 3)
+
         return {
-            "error": str(e)
-    }
-    if output.returncode != 0:
+            "host": hostname,
+            "ip": ip,
+            "status": "Reachable",
+            "packets_transmitted": str(packets_sent),
+            "packets_received": str(packets_received),
+            "packet_loss": f"{packet_loss:.0f}%",
+            "total_time": f"{total_time} ms",
+            "rtt_min": f"{rtt_min} ms",
+            "rtt_avg": f"{rtt_avg} ms",
+            "rtt_max": f"{rtt_max} ms",
+            "jitter": f"{jitter} ms"
+        }
+
+    except Exception:
+
         return {
-        "error": f"Unable to reach {hostname}"
-    }
-
-    lines = output.stdout.split("\n")
-
-    for line in lines :
-        if line.startswith("PING"):
-            ip = line.split("(")[1].split(")")[0]
-        if "packets transmitted" in line:
-            stats = line.split(",")
-            
-        if "rtt" in line:
-            rtt_values = line.split("=")[1].strip().replace("ms", "")
-            rtt_stats = rtt_values.split("/")
-            
-
-
-
-    stats_output = {
-    "host": hostname,
-    "ip": ip,
-    "status": "Reachable",
-    "packets_transmitted": stats[0].split()[0],
-    "packets_received": stats[1].split()[0],
-    "packet_loss": stats[2].split()[0],
-    "total_time": stats[3].split()[1].replace("ms", "") + " ms" ,
-    "rtt_min": rtt_stats[0] + " ms",
-    "rtt_avg": rtt_stats[1] + " ms",
-    "rtt_max": rtt_stats[2] + " ms",
-    "jitter": rtt_stats[3].strip() + " ms"
-}
-
-    return stats_output
+            "host": hostname,
+            "ip": "N/A",
+            "status": "Unreachable",
+            "packets_transmitted": "4",
+            "packets_received": "0",
+            "packet_loss": "100%",
+            "total_time": "0 ms",
+            "rtt_min": "0 ms",
+            "rtt_avg": "0 ms",
+            "rtt_max": "0 ms",
+            "jitter": "0 ms"
+        }
