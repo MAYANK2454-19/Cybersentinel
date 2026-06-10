@@ -5,11 +5,17 @@ def ping_host(hostname: str) -> dict:
     stats = []
     rtt_stats = []
 
-    output = subprocess.run(
-        ["ping", "-c", "4", hostname],
-        capture_output=True,
-        text=True
+    try:
+        output = subprocess.run(
+            ["ping", "-c", "4", hostname],
+            capture_output=True,
+            text=True,
+            timeout=10
     )
+    except Exception as e:
+        return {
+            "error": str(e)
+    }
     if output.returncode != 0:
         return {
         "error": f"Unable to reach {hostname}"
