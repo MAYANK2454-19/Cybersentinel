@@ -38,6 +38,15 @@
         <h3>Packet Loss</h3>
         <p>{{ report["packet_loss"] }}</p>
     </div>
+    <div class="stat-card">
+    <h3>Protocol</h3>
+    <p>{{ report["protocol"] }}</p>
+</div>
+
+<div class="stat-card">
+    <h3>Port Used</h3>
+    <p>{{ report["port_used"] }}</p>
+</div>
 
 </div>
 
@@ -139,4 +148,13 @@ function downloadReport(){
 </div>
 
 </body>
+<footer>
+
+    CyberSentinel v1.0
+
+    <br>
+
+    Ping Analysis • RTT Statistics • Host Verification
+
+</footer>
 </html>

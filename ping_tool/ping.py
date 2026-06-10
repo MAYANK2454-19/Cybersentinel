@@ -7,72 +7,97 @@ def ping_host(hostname: str) -> dict:
     try:
         ip = socket.gethostbyname(hostname)
 
-        latencies = []
+    except Exception:
+        return {
+            "error": f"Unable to resolve {hostname}"
+        }
 
-        packets_sent = 4
-        packets_received = 0
+    ports = [22,80,443]
 
-        for _ in range(4):
+    connected_port = None
 
+    for port in ports:
+        try:
+            sock = socket.create_connection(
+                (hostname, port),
+                timeout=3
+            )
+
+            connected_port = port
+            sock.close()
+            break
+
+        except:
+            continue
+
+    if connected_port is None:
+        return {
+            "error": f"Host {hostname} is unreachable"
+        }
+
+    rtts = []
+
+    packets_sent = 4
+    packets_received = 0
+
+    for _ in range(4):
+
+        try:
             start = time.time()
 
             sock = socket.create_connection(
-                (hostname, 80),
-                timeout=5
+                (hostname, connected_port),
+                timeout=3
             )
 
             end = time.time()
 
             sock.close()
 
-            latency = round((end - start) * 1000, 3)
+            rtt = (end - start) * 1000
 
-            latencies.append(latency)
+            rtts.append(rtt)
 
             packets_received += 1
 
-        packet_loss = (
-            (packets_sent - packets_received)
-            / packets_sent
-        ) * 100
+        except:
+            pass
 
-        rtt_min = min(latencies)
-        rtt_avg = round(sum(latencies) / len(latencies), 3)
-        rtt_max = max(latencies)
+    packet_loss = (
+        (packets_sent - packets_received)
+        / packets_sent
+    ) * 100
 
-        jitter = round(
-            max(latencies) - min(latencies),
-            3
-        )
-
-        total_time = round(sum(latencies), 3)
+    if len(rtts) == 0:
 
         return {
-            "host": hostname,
-            "ip": ip,
-            "status": "Reachable",
-            "packets_transmitted": str(packets_sent),
-            "packets_received": str(packets_received),
-            "packet_loss": f"{packet_loss:.0f}%",
-            "total_time": f"{total_time} ms",
-            "rtt_min": f"{rtt_min} ms",
-            "rtt_avg": f"{rtt_avg} ms",
-            "rtt_max": f"{rtt_max} ms",
-            "jitter": f"{jitter} ms"
+            "error": "No responses received"
         }
 
-    except Exception:
+    rtt_min = min(rtts)
+    rtt_avg = sum(rtts) / len(rtts)
+    rtt_max = max(rtts)
 
-        return {
-            "host": hostname,
-            "ip": "N/A",
-            "status": "Unreachable",
-            "packets_transmitted": "4",
-            "packets_received": "0",
-            "packet_loss": "100%",
-            "total_time": "0 ms",
-            "rtt_min": "0 ms",
-            "rtt_avg": "0 ms",
-            "rtt_max": "0 ms",
-            "jitter": "0 ms"
-        }
+    jitter = rtt_max - rtt_min
+
+    return {
+
+        "host": hostname,
+        "ip": ip,
+        "status": "Reachable",
+
+        "protocol": "TCP",
+        "port_used": connected_port,
+
+        "packets_transmitted": packets_sent,
+        "packets_received": packets_received,
+        "packet_loss": f"{packet_loss:.0f}%",
+
+        "rtt_min": f"{rtt_min:.3f} ms",
+        "rtt_avg": f"{rtt_avg:.3f} ms",
+        "rtt_max": f"{rtt_max:.3f} ms",
+
+        "jitter": f"{jitter:.3f} ms",
+
+        "total_time": f"{sum(rtts):.3f} ms"
+    }
