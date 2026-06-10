@@ -214,22 +214,7 @@ footer{
 
     padding:20px;
 }
-.centered-card{
 
-    background:#111827;
-
-    border:1px solid #00ff88;
-
-    padding:20px;
-
-    margin:40px auto;
-
-    text-align:center;
-
-    border-radius:12px;
-
-    max-width:200px;
-}
 .centered-form{
     background-color: #161b22; 
     margin-top: 20px;
@@ -267,4 +252,64 @@ td{
     margin-top:4px;
     word-wrap:break-word;
     overflow-wrap:break-word;
+}
+.tool-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+    margin-top:40px;
+}
+
+.tool-card{
+    background:#161b22;
+    padding:25px;
+    border-radius:12px;
+    text-align:center;
+    text-decoration:none;
+    color:white;
+    border:1px solid #30363d;
+    transition:0.3s;
+}
+
+.tool-card:hover{
+    transform:translateY(-5px);
+    border-color:#58a6ff;
+}
+
+.tool-card h2{
+    color:#58a6ff;
+}
+
+.disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+.action-buttons{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:20px;
+    margin:40px 0;
+    flex-wrap:wrap;
+}
+
+.action-btn{
+    background:#111827;
+    color:#00ff88;
+    border:1px solid #00ff88;
+    border-radius:10px;
+    padding:14px 24px;
+    text-decoration:none;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+    min-width:180px;
+    text-align:center;
+}
+
+.action-btn:hover{
+    background:#00ff88;
+    color:#000;
+    box-shadow:0 0 15px rgba(0,255,136,.5);
 }

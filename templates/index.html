@@ -1,49 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cyber Scanner</title>
+    <title>CyberSentinel</title>
     <link rel="stylesheet"
-      href="{{ url_for('static', filename='css/style.css') }}">
+    href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
 <div class="container">
 
     <div class="header">
-        <h1>CYBER SCANNER</h1>
-        <p>Advanced Network Reconnaissance Tool</p>
+        <h1>CYBERSENTINEL</h1>
+        <p>Network Reconnaissance Suite</p>
     </div>
 
-    <div  class ="centered-form">
+    <div class="tool-grid">
 
-        <form method="POST">
+        <a href="/portscan" class="tool-card">
+            <h2>Port Scanner</h2>
+            <p>
+                Discover open ports,
+                services and banners
+            </p>
+        </a>
 
-            <h2>Target Information</h2>
+        <a href="/ping" class="tool-card">
+            <h2>Ping Tool</h2>
+            <p>
+                Measure latency,
+                packet loss and RTT
+            </p>
+        </a>
 
-            <input type="text"
-                   name="hostname"
-                   placeholder="google.com"
-                   required>
+        <div class="tool-card disabled">
+            <h2>WHOIS Lookup</h2>
+            <p>Coming Soon</p>
+        </div>
 
-            <br><br>
-
-            <input type="number"
-                   name="start_port"
-                   value="1"
-                   required>
-
-            <input type="number"
-                   name="end_port"
-                   value="1000"
-                   required>
-
-            <br><br>
-
-            <button type="submit">
-                Start Scan
-            </button>
-
-        </form>
+        <div class="tool-card disabled">
+            <h2>IP Geolocation</h2>
+            <p>Coming Soon</p>
+        </div>
 
     </div>
 

@@ -1,11 +1,19 @@
 from flask import Flask, render_template, request
+
 from scanner.scanner import run_scan
+from ping_tool.ping import ping_host
+
 import os
 
 app = Flask(__name__)
 
-@app.route("/", methods=["GET", "POST"])
-def home():
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+@app.route("/portscan", methods=["GET", "POST"])
+def portscan():
 
     if request.method == "POST":
 
@@ -13,17 +21,40 @@ def home():
         start_port = int(request.form["start_port"])
         end_port = int(request.form["end_port"])
 
-        report = run_scan(hostname,start_port,end_port )
+        report = run_scan(
+            hostname,
+            start_port,
+            end_port
+        )
 
         return render_template(
-            "results.html",
+            "result.html",
             report=report
         )
 
-    return render_template("index.html")
+    return render_template("portscan.html")
+
+
+@app.route("/ping", methods=["GET", "POST"])
+def ping():
+
+    if request.method == "POST":
+
+        hostname = request.form["hostname"]
+
+        report = ping_host(hostname)
+
+        return render_template(
+            "ping_result.html",
+            report=report
+        )
+
+    return render_template("ping.html")
+
 
 if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
-        port=int(os.environ.get("PORT", 10000))
+        port=int(os.environ.get("PORT", 5000)),
+        debug=True
     )

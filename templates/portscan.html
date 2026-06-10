@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PORT SCANNER</title>
+    <link rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>PORT SCANNER</h1>
+        <p>Advanced Network Reconnaissance Tool</p>
+    </div>
+<div class="nav-buttons">
+    <a href="/" class="dashboard-btn">
+        Dashboard
+    </a>
+</div>
+    <div  class ="centered-form">
+
+        <form method="POST">
+
+            <h2>Target Information</h2>
+
+            <input type="text"
+                   name="hostname"
+                   placeholder="google.com"
+                   required>
+
+            <br><br>
+
+            <input type="number"
+                   name="start_port"
+                   value="1"
+                   required>
+
+            <input type="number"
+                   name="end_port"
+                   value="1000"
+                   required>
+
+            <br><br>
+
+            <button type="submit">
+                Start Scan
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>
