@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IP Geolocation</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+<div class="header">
+    <h1>IP GEOLOCATION</h1>
+    <p>Locate IP Addresses Worldwide</p>
+</div>
+<div class="nav-buttons">
+    <a href="/" class="dashboard-btn">
+        Dashboard
+    </a>
+</div>
+
+<div class="centered-form">
+
+<form method="POST">
+
+    <h2>Target IP Address</h2>
+
+    <input
+        type="text"
+        name="ip"
+        placeholder="8.8.8.8"
+        required
+    >
+
+    <br><br>
+
+    <button type="submit">
+        Lookup IP
+    </button>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+</html>

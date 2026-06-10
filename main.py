@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-
+from geolocation.geolocation import ip_lookup
 from scanner.scanner import run_scan
 from ping_tool.ping import ping_host
 
@@ -50,6 +50,23 @@ def ping():
         )
 
     return render_template("ping.html")
+@app.route("/geolocation", methods=["GET", "POST"])
+def geolocation():
+
+    if request.method == "POST":
+
+        ip = request.form["ip"]
+
+        report = ip_lookup(ip)
+
+        return render_template(
+            "geolocation_result.html",
+            report=report
+        )
+
+    return render_template(
+        "geolocation.html"
+    )
 
 
 if __name__ == "__main__":
