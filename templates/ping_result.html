@@ -15,6 +15,9 @@
 </div>
 
 <div class="stats-grid">
+     {% if report.error %}
+<p>{{ report.error }}</p>
+{% endif %}
 
     <div class="stat-card">
         <h3>Host</h3>
