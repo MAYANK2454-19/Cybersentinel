@@ -3,6 +3,7 @@ from geolocation.geolocation import ip_lookup
 from scanner.scanner import run_scan
 from ping_tool.ping import ping_host
 from subdomain_finder.subfinder import find_subdomains
+from whois_tool.whois_lookup import whois_lookup
 
 import os
 
@@ -83,6 +84,24 @@ def subdomain():
         )
 
     return render_template("subdomain.html")
+
+@app.route("/whois", methods=["GET", "POST"])
+def whois_page():
+
+    if request.method == "POST":
+
+        domain = request.form["domain"]
+
+        report = whois_lookup(domain)
+
+        return render_template(
+            "whois_result.html",
+            report=report
+        )
+
+    return render_template(
+        "whois_index.html"
+    )
 
 if __name__ == "__main__":
     app.run(

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WHOIS Lookup</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static',
+    filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+<div class="header">
+
+    <h1>WHOIS LOOKUP</h1>
+    <p>Domain Information</p>
+
+</div>
+<div class="nav-buttons">
+    <a href="/" class="dashboard-btn">
+        Dashboard
+    </a>
+</div>
+<div class="centered-form">
+
+<form method="POST">
+
+    <h2>Enter Domain</h2>
+
+    <input
+        type="text"
+        name="domain"
+        placeholder="google.com"
+        required>
+
+    <br><br>
+
+    <button type="submit">
+
+        Lookup
+
+    </button>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+</html>
