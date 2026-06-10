@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 from geolocation.geolocation import ip_lookup
 from scanner.scanner import run_scan
 from ping_tool.ping import ping_host
+from subdomain_finder.subfinder import find_subdomains
 
 import os
 
@@ -67,11 +68,25 @@ def geolocation():
     return render_template(
         "geolocation.html"
     )
+@app.route("/subdomain", methods=["GET", "POST"])
+def subdomain():
 
+    if request.method == "POST":
+
+        domain = request.form["domain"]
+
+        report = find_subdomains(domain)
+
+        return render_template(
+            "subdomain_result.html",
+            report=report
+        )
+
+    return render_template("subdomain.html")
 
 if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
-        port=int(os.environ.get("PORT", 5000)),
+        port=int(os.environ.get("PORT", 4000)),
         debug=True
     )

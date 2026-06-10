@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Subdomain Results</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+
+<div class="header">
+<h1>SUBDOMAIN RESULTS</h1>
+</div>
+
+<div class="stats-grid">
+
+<div class="stat-card">
+<h3>Domain</h3>
+<p>{{ report.domain }}</p>
+</div>
+
+<div class="stat-card">
+<h3>Total Found</h3>
+<p>{{ report.total_found }}</p>
+</div>
+
+<div class="stat-card">
+<h3>Live</h3>
+<p>{{ report.live_count }}</p>
+</div>
+
+<div class="stat-card">
+<h3>Dead</h3>
+<p>{{ report.dead_count }}</p>
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Subdomains</h2>
+
+<table>
+
+<tr>
+<th>#</th>
+<th>Subdomain</th>
+</tr>
+
+{% for subdomain in report.subdomains %}
+
+<tr>
+<td>{{ loop.index }}</td>
+<td>{{ subdomain }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+<div class="action-buttons">
+
+<a href="/subdomain"
+class="action-btn">
+
+Run Another Search
+
+</a>
+
+<a href="/"
+class="action-btn">
+
+Dashboard
+
+</a>
+<button class="action-btn" onclick="downloadReport()">
+
+Download JSON Report
+
+</button>
+
+</div>
+
+</div>
+
+</body>
+<script type="application/json" id="report-data">
+{{ report | tojson }}
+</script>
+
+<script>
+
+function downloadReport() {
+
+    const raw =
+    document.getElementById(
+        "report-data"
+    ).textContent;
+
+    const data =
+    JSON.parse(raw);
+
+    const blob =
+    new Blob(
+        [JSON.stringify(data,null,2)],
+        {type:"application/json"}
+    );
+
+    const url =
+    URL.createObjectURL(blob);
+
+    const a =
+    document.createElement("a");
+
+    a.href = url;
+    a.download =
+    "subdomain_report.json";
+
+    a.click();
+
+    URL.revokeObjectURL(url);
+}
+
+</script>
+</html>
