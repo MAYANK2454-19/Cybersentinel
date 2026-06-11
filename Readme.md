@@ -626,6 +626,12 @@ Users are responsible for ensuring they have permission before scanning or testi
 
 Unauthorized scanning of third-party systems may violate laws, regulations, or organizational policies.
 
+Designed for educational and reconnaissance purposes.
+
+Some features such as port scanning and network reachability
+
+may be affected by restrictions imposed by the hosting provider.
+
 ---
 
 # Author
