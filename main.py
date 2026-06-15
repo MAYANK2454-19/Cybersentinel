@@ -6,6 +6,7 @@ from subdomain_finder.subfinder import find_subdomains
 from whois_tool.whois_lookup import whois_lookup
 from dns_tool.dns_lookup import dns_lookup
 from ssl_analyzer.ssl_lookup import analyze_ssl
+from security_headers.headers import analyze_headers
 
 import os
 
@@ -138,6 +139,23 @@ def ssl_page():
 
     return render_template(
         "ssl_index.html"
+    )
+@app.route("/headers", methods=["GET", "POST"])
+def headers():
+
+    if request.method == "POST":
+
+        domain = request.form["domain"]
+
+        report = analyze_headers(domain)
+
+        return render_template(
+            "headers_result.html",
+            report=report
+        )
+
+    return render_template(
+        "headers_index.html"
     )
 
 if __name__ == "__main__":

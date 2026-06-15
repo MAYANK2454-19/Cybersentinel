@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Security Headers Report</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static',
+filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+
+<h1>SECURITY HEADERS REPORT</h1>
+
+</div>
+
+<div class="stats-grid">
+
+<div class="stat-card">
+
+<h3>Domain</h3>
+
+<p>{{ report["domain"] }}</p>
+
+</div>
+
+<div class="stat-card">
+
+    <h3>Score</h3>
+
+    <p>
+        {{ report["score"] }}
+        /
+        {{ report["total"] }}
+    </p>
+
+</div>
+<div class="stat-card">
+    <h3>Grade</h3>
+    <p>{{ report["grade"] }}</p>
+</div>
+
+<div class="stat-card">
+    <h3>Status Code</h3>
+    <p>{{ report["status_code"] }}</p>
+</div>
+
+<div class="stat-card">
+    <h3>Server</h3>
+    <p>{{ report["server"] }}</p>
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Header Analysis</h2>
+
+<table>
+
+<tr>
+
+<th>Header</th>
+<th>Status</th>
+<th>Value</th>
+
+</tr>
+
+{% for header, value in report["headers"].items() %}
+
+<tr>
+
+<td>{{ header }}</td>
+
+<td>
+
+{% if value %}
+
+<span class="https-badge">
+
+Present
+
+</span>
+
+{% else %}
+
+<span class="http-badge">
+
+Missing
+
+</span>
+
+{% endif %}
+
+</td>
+
+<td>
+
+{{ value if value else "Not Found" }}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+<div class="action-buttons">
+
+    <a href="/headers" class="action-btn">
+        Run Another Header Analysis
+    </a>
+
+    <a href="/" class="action-btn">
+        Dashboard
+    </a>
+
+    <button class="action-btn" onclick="downloadReport()">
+        Download Report
+    </button>
+
+</div>
+
+<script type="application/json" id="report-data">
+{{ report | tojson }}
+</script>
+
+<script>
+function downloadReport(){
+
+    const raw = document.getElementById("report-data").textContent;
+    const data = JSON.parse(raw);
+
+    const blob = new Blob(
+        [JSON.stringify(data, null, 2)],
+        {type:"application/json"}
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "headers_report.json";
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(url);
+}
+</script>
+
+</div>
+
+<footer>
+
+CyberSentinel v1.0
+
+<br>
+
+Security Headers • Web Security • HTTP Analysis
+
+</footer>
+
+</body>
+
+</html>
