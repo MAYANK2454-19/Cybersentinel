@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>SSL Report</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static',
+filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+
+<h1>SSL REPORT</h1>
+
+</div>
+
+<div class="stats-grid">
+
+<div class="stat-card">
+
+<h3>Domain</h3>
+
+<p>{{ report["domain"] }}</p>
+
+</div>
+
+<div class="stat-card">
+
+<h3>TLS Version</h3>
+
+<p>{{ report["tls_version"] }}</p>
+
+</div>
+
+<div class="stat-card">
+
+<h3>Issuer</h3>
+
+<p>{{ report["issuer"] }}</p>
+
+</div>
+
+<div class="stat-card">
+
+<h3>Days Remaining</h3>
+
+<p>{{ report["days_remaining"] }}</p>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Certificate Details</h2>
+
+<table>
+
+<tr>
+
+<th>Field</th>
+<th>Value</th>
+
+</tr>
+
+<tr>
+
+<td>Subject</td>
+<td>{{ report["subject"] }}</td>
+
+</tr>
+
+<tr>
+
+<td>Issuer</td>
+<td>{{ report["issuer"] }}</td>
+
+</tr>
+
+<tr>
+
+<td>Valid From</td>
+<td>{{ report["valid_from"] }}</td>
+
+</tr>
+
+<tr>
+
+<td>Valid Until</td>
+<td>{{ report["valid_until"] }}</td>
+
+</tr>
+
+<tr>
+
+<td>Days Remaining</td>
+<td>{{ report["days_remaining"] }}</td>
+
+</tr>
+
+<tr>
+
+<td>TLS Version</td>
+<td>{{ report["tls_version"] }}</td>
+
+</tr>
+
+</table>
+
+</div>
+
+<div class="card">
+
+<h2>Subject Alternative Names</h2>
+
+<ul>
+
+{% for item in report["san"] %}
+
+<li>{{ item }}</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+<div class="action-buttons">
+
+    <a href="/ssl" class="action-btn">
+        Run Another Analysis
+    </a>
+
+    <a href="/" class="action-btn">
+        Dashboard
+    </a>
+
+    <button class="action-btn" onclick="downloadReport()">
+        Download Report
+    </button>
+
+</div>
+
+<script type="application/json" id="report-data">
+{{ report | tojson }}
+</script>
+
+<script>
+function downloadReport(){
+
+    const raw = document.getElementById("report-data").textContent;
+    const data = JSON.parse(raw);
+
+    const blob = new Blob(
+        [JSON.stringify(data, null, 2)],
+        {type:"application/json"}
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "ssl_report.json";
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(url);
+}
+</script>
+
+</div>
+
+</body>
+
+<footer>
+
+CyberSentinel v1.0
+
+<br>
+
+SSL Analysis • TLS Inspection • Certificate Intelligence
+
+</footer>
+
+</html>
