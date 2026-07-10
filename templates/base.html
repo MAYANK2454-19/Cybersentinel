@@ -34,7 +34,7 @@ href="{{ url_for('static', filename='css/loading.css') }}">
 
     <!-- ================= SIDEBAR ================= -->
 
-    <aside class="sidebar">
+    <aside id="sidebar" class="sidebar">
 
         <div class="logo">
 
@@ -93,6 +93,11 @@ href="{{ url_for('static', filename='css/loading.css') }}">
         <!-- ================= NAVBAR ================= -->
 
         <header class="topbar">
+            <button id="menu-toggle" class="menu-toggle">
+
+☰
+
+</button>
 
             <div>
 
@@ -245,6 +250,8 @@ if (search) {
 
 <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 <script src="{{ url_for('static', filename='js/loading.js') }}"></script>
+<script src="{{ url_for('static',
+filename='js/responsive.js') }}"></script>
 
 </body>
 
