@@ -1,193 +1,248 @@
-<!DOCTYPE html>
-<html>
-<head>
+```html
+{% extends "base.html" %}
 
-<title>SSL Report</title>
+{% block title %}
+SSL Report
+{% endblock %}
 
-<link rel="stylesheet"
-href="{{ url_for('static',
-filename='css/style.css') }}">
+{% block page_title %}
+SSL Inspector
+{% endblock %}
 
-</head>
+{% block subtitle %}
+TLS Certificate Analysis
+{% endblock %}
 
-<body>
+{% block content %}
 
-<div class="container">
+<div class="result-header">
 
-<div class="header">
+    <h1>SSL Certificate Report</h1>
 
-<h1>SSL REPORT</h1>
+    <p>
 
-</div>
+        TLS certificate inspection completed successfully.
+        Review certificate validity, issuer information,
+        encryption details and Subject Alternative Names.
 
-<div class="stats-grid">
-
-<div class="stat-card">
-
-<h3>Domain</h3>
-
-<p>{{ report["domain"] }}</p>
-
-</div>
-
-<div class="stat-card">
-
-<h3>TLS Version</h3>
-
-<p>{{ report["tls_version"] }}</p>
+    </p>
 
 </div>
 
-<div class="stat-card">
+<div class="summary-grid">
 
-<h3>Issuer</h3>
+    <div class="summary-card">
 
-<p>{{ report["issuer"] }}</p>
+        <h3>Domain</h3>
 
-</div>
+        <p>{{ report.domain }}</p>
 
-<div class="stat-card">
+    </div>
 
-<h3>Days Remaining</h3>
+    <div class="summary-card">
 
-<p>{{ report["days_remaining"] }}</p>
+        <h3>TLS Version</h3>
 
-</div>
+        <p>{{ report.tls_version }}</p>
 
-</div>
+    </div>
 
-<div class="card">
+    <div class="summary-card">
 
-<h2>Certificate Details</h2>
+        <h3>Issuer</h3>
 
-<table>
+        <p>{{ report.issuer }}</p>
 
-<tr>
+    </div>
 
-<th>Field</th>
-<th>Value</th>
+    <div class="summary-card">
 
-</tr>
+        <h3>Certificate Status</h3>
 
-<tr>
+        {% if report.days_remaining > 30 %}
 
-<td>Subject</td>
-<td>{{ report["subject"] }}</td>
+            <span class="badge-success">
 
-</tr>
+                Valid
 
-<tr>
+            </span>
 
-<td>Issuer</td>
-<td>{{ report["issuer"] }}</td>
+        {% elif report.days_remaining > 0 %}
 
-</tr>
+            <span class="badge-warning">
 
-<tr>
+                Expiring Soon
 
-<td>Valid From</td>
-<td>{{ report["valid_from"] }}</td>
+            </span>
 
-</tr>
+        {% else %}
 
-<tr>
+            <span class="badge-danger">
 
-<td>Valid Until</td>
-<td>{{ report["valid_until"] }}</td>
+                Expired
 
-</tr>
+            </span>
 
-<tr>
+        {% endif %}
 
-<td>Days Remaining</td>
-<td>{{ report["days_remaining"] }}</td>
+    </div>
 
-</tr>
+    <div class="summary-card">
 
-<tr>
+        <h3>Days Remaining</h3>
 
-<td>TLS Version</td>
-<td>{{ report["tls_version"] }}</td>
+        <p>{{ report.days_remaining }}</p>
 
-</tr>
-
-</table>
+    </div>
 
 </div>
 
-<div class="card">
 
-<h2>Subject Alternative Names</h2>
+<div class="result-card">
 
-<ul>
+    <h2>Certificate Details</h2>
 
-{% for item in report["san"] %}
+    <table class="result-table">
 
-<li>{{ item }}</li>
+        <tr>
 
-{% endfor %}
+            <td>Subject</td>
 
-</ul>
+            <td>{{ report.subject }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Issuer</td>
+
+            <td>{{ report.issuer }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Valid From</td>
+
+            <td>{{ report.valid_from }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Valid Until</td>
+
+            <td>{{ report.valid_until }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Days Remaining</td>
+
+            <td>{{ report.days_remaining }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>TLS Version</td>
+
+            <td>{{ report.tls_version }}</td>
+
+        </tr>
+
+    </table>
 
 </div>
 
-<div class="action-buttons">
 
-    <a href="/ssl" class="action-btn">
+<div class="result-card">
+
+    <h2>Subject Alternative Names</h2>
+
+    <div class="san-container">
+
+        {% for item in report.san %}
+
+            <span class="san-tag">
+
+                {{ item }}
+
+            </span>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+<div class="result-buttons">
+
+    <a href="/ssl" class="primary-btn">
+
         Run Another Analysis
+
     </a>
 
-    <a href="/" class="action-btn">
+    <a href="/" class="primary-btn">
+
         Dashboard
+
     </a>
 
-    <button class="action-btn" onclick="downloadReport()">
-        Download Report
+    <button class="primary-btn"
+            onclick="downloadReport()">
+
+        Download JSON
+
     </button>
 
 </div>
 
+
 <script type="application/json" id="report-data">
+
 {{ report | tojson }}
+
 </script>
 
 <script>
+
 function downloadReport(){
 
-    const raw = document.getElementById("report-data").textContent;
-    const data = JSON.parse(raw);
+    const raw=document.getElementById("report-data").textContent;
 
-    const blob = new Blob(
-        [JSON.stringify(data, null, 2)],
+    const data=JSON.parse(raw);
+
+    const blob=new Blob(
+
+        [JSON.stringify(data,null,2)],
+
         {type:"application/json"}
+
     );
 
-    const url = URL.createObjectURL(blob);
+    const url=URL.createObjectURL(blob);
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "ssl_report.json";
+    const a=document.createElement("a");
+
+    a.href=url;
+
+    a.download="ssl_report.json";
 
     document.body.appendChild(a);
+
     a.click();
+
     document.body.removeChild(a);
 
     URL.revokeObjectURL(url);
+
 }
+
 </script>
 
-</div>
-
-</body>
-
-<footer>
-
-CyberSentinel v1.0
-
-<br>
-
-SSL Analysis • TLS Inspection • Certificate Intelligence
-
-</footer>
-
-</html>
+{% endblock %}
+```

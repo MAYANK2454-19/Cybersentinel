@@ -1,71 +1,68 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
+{% block title %}Security Headers{% endblock %}
 
-<title>Security Headers Analyzer</title>
+{% block content %}
 
-<link rel="stylesheet"
-href="{{ url_for('static',
-filename='css/style.css') }}">
+<div class="tool-container">
 
-</head>
+    <div class="tool-header">
 
-<body>
+        <h1>Security Header Analyzer</h1>
 
-<div class="container">
+        <p>
+            Evaluate HTTP security headers and identify missing protections.
+        </p>
 
-<div class="header">
+    </div>
 
-<h1>SECURITY HEADERS ANALYZER</h1>
+    <div class="tool-info">
 
-<p>Inspect Website Security Headers</p>
+        <h3>Capabilities</h3>
 
+        <ul>
+
+            <li>Security Header Detection</li>
+
+            <li>Risk Scoring</li>
+
+            <li>Missing Header Identification</li>
+
+            <li>HTTP Response Analysis</li>
+
+        </ul>
+
+    </div>
+
+    <form class="tool-form" action="/headers" method="POST">
+
+        <label>Website URL</label>
+
+        <input
+            class="tool-input"
+            type="text"
+            name="url"
+            placeholder="https://example.com"
+            required>
+
+        <button class="primary-btn">
+
+            Analyze Headers
+
+        </button>
+
+    </form>
+
+    <div class="tool-actions">
+
+        <a href="/" class="secondary-btn">
+
+            ← Back to Dashboard
+
+        </a>
+
+    </div>
 
 </div>
-<div class="nav-buttons">
-    <a href="/" class="dashboard-btn">
-        Dashboard
-    </a>
-</div>
 
-<div class="centered-form">
-
-<form method="POST">
-
-<h2>Target Domain</h2>
-
-<input
-type="text"
-name="domain"
-placeholder="google.com"
-required>
-
-<br><br>
-
-<button type="submit">
-
-Analyze Headers
-
-</button>
-
-</form>
-
-</div>
-
-</div>
-
-</body>
-<footer>
-
-CyberSentinel v1.0
-
-<br>
-
-Security Headers • Web Security • HTTP Analysis
-
-</footer>
-
-</body>
-
-</html>
+{% endblock %}

@@ -1,140 +1,216 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>IP Geolocation Result</title>
+```html
+{% extends "base.html" %}
 
-    <link rel="stylesheet"
-    href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
+{% block title %}
+IP Geolocation Report
+{% endblock %}
 
-<div class="container">
+{% block page_title %}
+IP Geolocation
+{% endblock %}
 
-<div class="header">
-    <h1>GEOLOCATION REPORT</h1>
+{% block subtitle %}
+Location Intelligence & Network Information
+{% endblock %}
+
+{% block content %}
+
+<div class="result-header">
+
+    <h1>IP Geolocation Report</h1>
+
+    <p>
+
+        Geographic and network information has been collected for the
+        target IP address. This information assists during
+        reconnaissance and infrastructure profiling.
+
+    </p>
+
 </div>
 
-<div class="stats-grid">
 
-    <div class="stat-card">
+<div class="summary-grid">
+
+    <div class="summary-card">
+
         <h3>IP Address</h3>
-        <p>{{ report["ip"] }}</p>
+
+        <p>{{ report.ip }}</p>
+
     </div>
 
-    <div class="stat-card">
+    <div class="summary-card">
+
         <h3>Country</h3>
-        <p>{{ report["country"] }}</p>
+
+        <p>{{ report.country }}</p>
+
     </div>
 
-    <div class="stat-card">
+    <div class="summary-card">
+
         <h3>Region</h3>
-        <p>{{ report["region"] }}</p>
+
+        <p>{{ report.region }}</p>
+
     </div>
 
-    <div class="stat-card">
+    <div class="summary-card">
+
         <h3>City</h3>
-        <p>{{ report["city"] }}</p>
+
+        <p>{{ report.city }}</p>
+
     </div>
 
 </div>
 
-<div class="card">
 
-<table>
 
-<tr>
-    <th>Field</th>
-    <th>Value</th>
-</tr>
+<div class="result-card">
 
-<tr>
-    <td>ISP</td>
-    <td>{{ report["isp"] }}</td>
-</tr>
+    <h2>Location Details</h2>
 
-<tr>
-    <td>Organization</td>
-    <td>{{ report["org"] }}</td>
-</tr>
+    <table class="result-table">
 
-<tr>
-    <td>ZIP Code</td>
-    <td>{{ report["zip"] }}</td>
-</tr>
+        <tr>
 
-<tr>
-    <td>Timezone</td>
-    <td>{{ report["timezone"] }}</td>
-</tr>
+            <td>Internet Service Provider</td>
 
-<tr>
-    <td>Latitude</td>
-    <td>{{ report["latitude"] }}</td>
-</tr>
+            <td>{{ report.isp }}</td>
 
-<tr>
-    <td>Longitude</td>
-    <td>{{ report["longitude"] }}</td>
-</tr>
+        </tr>
 
-</table>
+        <tr>
+
+            <td>Organization</td>
+
+            <td>{{ report.org }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>ZIP / Postal Code</td>
+
+            <td>{{ report.zip }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Timezone</td>
+
+            <td>{{ report.timezone }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Latitude</td>
+
+            <td>{{ report.latitude }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Longitude</td>
+
+            <td>{{ report.longitude }}</td>
+
+        </tr>
+
+    </table>
 
 </div>
 
-<div class="action-buttons">
 
-    <a href="/geolocation" class="action-btn">
+
+<div class="result-card">
+
+    <h2>Reconnaissance Summary</h2>
+
+    <p>
+
+        Geolocation data helps identify the approximate geographic
+        location of network infrastructure. Combined with WHOIS,
+        DNS Enumeration and Port Scanning, it provides valuable
+        context during external reconnaissance.
+
+    </p>
+
+</div>
+
+
+
+<div class="result-buttons">
+
+    <a href="/geolocation" class="primary-btn">
+
         Lookup Another IP
+
     </a>
 
-    <a href="/" class="action-btn">
+    <a href="/" class="primary-btn">
+
         Dashboard
+
     </a>
 
-    <button class="action-btn" onclick="downloadReport()">
-        Download Report
+    <button class="primary-btn"
+            onclick="downloadReport()">
+
+        Download JSON
+
     </button>
 
 </div>
 
-</div>
+
+
 <script type="application/json" id="report-data">
+
 {{ report | tojson }}
+
 </script>
 
 <script>
+
 function downloadReport(){
 
-    const raw = document.getElementById("report-data").textContent;
-    const data = JSON.parse(raw);
+    const raw=document.getElementById("report-data").textContent;
 
-    const blob = new Blob(
-        [JSON.stringify(data, null, 2)],
+    const data=JSON.parse(raw);
+
+    const blob=new Blob(
+
+        [JSON.stringify(data,null,2)],
+
         {type:"application/json"}
+
     );
 
-    const url = URL.createObjectURL(blob);
+    const url=URL.createObjectURL(blob);
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "geolocation_report.json";
+    const a=document.createElement("a");
+
+    a.href=url;
+
+    a.download="geolocation_report.json";
 
     document.body.appendChild(a);
+
     a.click();
+
     document.body.removeChild(a);
 
     URL.revokeObjectURL(url);
+
 }
+
 </script>
 
-</body>
-<footer>
-
-    CyberSentinel v1.0
-
-    <br>
-
-    IP Geolocation • ASN Lookup • ISP Information • Location Intelligence
-
-</footer>
-</html>
+{% endblock %}
+```

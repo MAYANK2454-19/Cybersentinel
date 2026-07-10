@@ -1,108 +1,215 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>CyberSentinel</title>
-    <link rel="stylesheet"
-    href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
 
-<div class="container">
+{% block title %}CyberSentinel{% endblock %}
+{% block page_title %}CyberSentinel{% endblock %}
+{% block subtitle %}Professional Cyber Reconnaissance Platform{% endblock %}
 
-    <div class="header">
-        <h1>CYBERSENTINEL</h1>
-        <p>Network Reconnaissance Suite</p>
+{% block content %}
+
+<section class="hero">
+  <div class="hero-left">
+    <h1>CyberSentinel</h1>
+    <p>A modular reconnaissance platform for network discovery, information gathering and web security assessment.</p>
+    <div class="hero-buttons">
+      <a href="#modules" class="primary-btn">Explore Tools</a>
+      <a href="#workflow" class="secondary-btn">Workflow</a>
     </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-card">
+      <h2>Platform Overview</h2>
+      <table class="mini-table">
+        <tr><td>Modules</td><td>8</td></tr>
+        <tr><td>Export</td><td>JSON</td></tr>
+        <tr><td>Framework</td><td>Flask</td></tr>
+        <tr><td>Status</td><td>Operational</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
 
-    <div class="tool-grid">
+<section class="stats-grid">
+<div class="stat-card"><h3>Recon Modules</h3><p>8</p></div>
+<div class="stat-card"><h3>Categories</h3><p>4</p></div>
+<div class="stat-card"><h3>Reports</h3><p>JSON</p></div>
+<div class="stat-card"><h3>Architecture</h3><p>Modular</p></div>
+</section>
 
-        <a href="/portscan" class="tool-card">
-            <h2>Port Scanner</h2>
-            <p>
-                Discover open ports,
-                services and banners
-            </p>
-        </a>
+<section id="modules">
+<h2 class="section-title">Reconnaissance Modules</h2>
 
-        <a href="/ping" class="tool-card">
-            <h2>Ping Tool</h2>
-            <p>
-                Measure latency,
-                packet loss and RTT
-            </p>
-        </a>
-        <a href="/geolocation" class="tool-card">
+<div class="tool-grid">
 
-    <h2>IP Geolocation</h2>
-
-    <p>
-        Discover country, city,
-        ISP, organization,
-        coordinates and timezone.
-    </p>
-
+<a href="/portscan" class="tool-card" data-search="port scanner tcp banner services">
+<span class="tool-category">Network Reconnaissance</span>
+<h3 class="tool-title">Port Scanner</h3>
+<p class="tool-desc">Discover open TCP ports, identify services, perform banner grabbing and technology detection.</p>
+<div class="tool-meta"><span>Basic</span><span>&lt;10 s</span></div>
+<span class="launch-btn">Launch Tool →</span>
 </a>
-<a href="/subdomain" class="tool-card">
 
-    <h2>Subdomain Finder</h2>
-
-    <p>
-        Discover subdomains using
-        Certificate Transparency Logs
-    </p>
-
+<a href="/ping" class="tool-card" data-search="ping latency icmp">
+<span class="tool-category">Network Reconnaissance</span>
+<h3 class="tool-title">Ping Analyzer</h3>
+<p class="tool-desc">Verify host availability and measure latency.</p>
+<div class="tool-meta"><span>Basic</span><span>&lt;5 s</span></div>
+<span class="launch-btn">Launch Tool →</span>
 </a>
-<a href="/dns" class="tool-card">
 
-    <h2>DNS Enumeration</h2>
-
-    <p>
-        A, AAAA, MX, NS and TXT Records
-    </p>
-
+<a href="/geo" class="tool-card" data-search="geo ip">
+<span class="tool-category">Information Gathering</span>
+<h3 class="tool-title">IP Geolocation</h3>
+<p class="tool-desc">Retrieve ISP, location and geographic information.</p>
+<div class="tool-meta"><span>Basic</span><span>&lt;3 s</span></div>
+<span class="launch-btn">Launch Tool →</span>
 </a>
+
 <a href="/whois" class="tool-card">
-
-    <h2>WHOIS Lookup</h2>
-
-    <p>
-        Domain Registration Information
-    </p>
-
+<span class="tool-category">Information Gathering</span>
+<h3 class="tool-title">WHOIS Lookup</h3>
+<p class="tool-desc">View registrar, dates and registration metadata.</p>
+<div class="tool-meta"><span>Basic</span><span>&lt;3 s</span></div>
+<span class="launch-btn">Launch Tool →</span>
 </a>
 
-       <a href="/ssl" class="tool-card">
-
-    <h2>SSL Analyzer</h2>
-
-    <p>
-        Certificate & TLS Inspection
-    </p>
-
+<a href="/dns" class="tool-card">
+<span class="tool-category">DNS Intelligence</span>
+<h3 class="tool-title">DNS Enumeration</h3>
+<p class="tool-desc">Collect A, AAAA, MX, NS, TXT, CNAME and SOA records.</p>
+<div class="tool-meta"><span>Intermediate</span><span>&lt;5 s</span></div>
+<span class="launch-btn">Launch Tool →</span>
 </a>
 
-       <a href="/headers" class="tool-card">
-
-    <h2>Security Headers</h2>
-
-    <p>
-        Analyze HTTP Security Headers
-    </p>
-
+<a href="/subdomain" class="tool-card">
+<span class="tool-category">Asset Discovery</span>
+<h3 class="tool-title">Subdomain Finder</h3>
+<p class="tool-desc">Discover subdomains using CT logs with DNS validation.</p>
+<div class="tool-meta"><span>Intermediate</span><span>10–30 s</span></div>
+<span class="launch-btn">Launch Tool →</span>
 </a>
 
-    </div>
+<a href="/ssl" class="tool-card">
+<span class="tool-category">Web Security</span>
+<h3 class="tool-title">SSL Inspector</h3>
+<p class="tool-desc">Inspect certificates, issuers and TLS configuration.</p>
+<div class="tool-meta"><span>Basic</span><span>&lt;5 s</span></div>
+<span class="launch-btn">Launch Tool →</span>
+</a>
+
+<a href="/headers" class="tool-card">
+<span class="tool-category">Web Security</span>
+<h3 class="tool-title">Security Headers</h3>
+<p class="tool-desc">Review HTTP security headers and missing protections.</p>
+<div class="tool-meta"><span>Intermediate</span><span>&lt;5 s</span></div>
+<span class="launch-btn">Launch Tool →</span>
+</a>
 
 </div>
+</section>
 
-</body>
-<footer>
+<section id="workflow">
 
-    CyberSentinel v1.0
+    <h2 class="section-title">
+        Reconnaissance Workflow
+    </h2>
 
-    <br>
+    <p class="section-description">
+        A typical reconnaissance process followed during information gathering
+        and initial security assessment.
+    </p>
 
-    Reconnaissance • Enumeration • Network Intelligence
+    <div class="workflow">
 
-</footer>
-</html>
+        <div class="workflow-card">
+            <div class="workflow-icon"></div>
+            <h3>Target Selection</h3>
+            <p>Select the domain or IP address to investigate.</p>
+        </div>
+
+        <div class="workflow-line"></div>
+
+        <div class="workflow-card">
+            <div class="workflow-icon"></div>
+            <h3>WHOIS Lookup</h3>
+            <p>Collect ownership, registrar and registration metadata.</p>
+        </div>
+
+        <div class="workflow-line"></div>
+
+        <div class="workflow-card">
+            <div class="workflow-icon"></div>
+            <h3>DNS Enumeration</h3>
+            <p>Enumerate DNS records including MX, NS, TXT and SOA.</p>
+        </div>
+
+        <div class="workflow-line"></div>
+
+        <div class="workflow-card">
+            <div class="workflow-icon"></div>
+            <h3>Subdomain Discovery</h3>
+            <p>Identify exposed assets through Certificate Transparency logs.</p>
+        </div>
+
+        <div class="workflow-line"></div>
+
+        <div class="workflow-card">
+            <div class="workflow-icon"></div>
+            <h3>Port Scanning</h3>
+            <p>Discover running services and open TCP ports.</p>
+        </div>
+
+        <div class="workflow-line"></div>
+
+        <div class="workflow-card">
+            <div class="workflow-icon"></div>
+            <h3>SSL Inspection</h3>
+            <p>Inspect TLS certificates and encryption configuration.</p>
+        </div>
+
+        <div class="workflow-line"></div>
+
+        <div class="workflow-card">
+            <div class="workflow-icon"></div>
+            <h3>Header Analysis</h3>
+            <p>Evaluate HTTP response security headers.</p>
+        </div>
+
+        <div class="workflow-line"></div>
+
+        <div class="workflow-card">
+            <div class="workflow-icon"></div>
+            <h3>Report</h3>
+            <p>Export reconnaissance results in JSON format.</p>
+        </div>
+
+    </div>
+
+</section>
+
+<section id="categories">
+<h2 class="section-title">Platform Capabilities</h2>
+<div class="category-grid">
+<div class="category-card"><h3>Information Gathering</h3><ul><li>WHOIS</li><li>Geo IP</li><li>DNS</li></ul></div>
+<div class="category-card"><h3>Network Reconnaissance</h3><ul><li>Ping</li><li>Port Scanner</li><li>Subdomains</li></ul></div>
+<div class="category-card"><h3>Web Security</h3><ul><li>SSL</li><li>Security Headers</li></ul></div>
+</div>
+</section>
+
+<section id="roadmap">
+<h2 class="section-title">Cybersecurity Learning Roadmap</h2>
+<div class="roadmap">
+<div class="roadmap-item"><div class="roadmap-circle">1</div><h3>Networking</h3></div>
+<div class="roadmap-line"></div>
+<div class="roadmap-item"><div class="roadmap-circle">2</div><h3>Linux</h3></div>
+<div class="roadmap-line"></div>
+<div class="roadmap-item"><div class="roadmap-circle">3</div><h3>Programming</h3></div>
+<div class="roadmap-line"></div>
+<div class="roadmap-item"><div class="roadmap-circle">4</div><h3>Recon</h3></div>
+<div class="roadmap-line"></div>
+<div class="roadmap-item"><div class="roadmap-circle">5</div><h3>Web Security</h3></div>
+<div class="roadmap-line"></div>
+<div class="roadmap-item"><div class="roadmap-circle">6</div><h3>Penetration Testing</h3></div>
+</div>
+</section>
+
+{% endblock %}

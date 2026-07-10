@@ -1,64 +1,68 @@
-<!DOCTYPE html>
-<html>
-<head>
+{% extends "base.html" %}
 
-<title>SSL Analyzer</title>
+{% block title %}SSL Inspector{% endblock %}
 
-<link rel="stylesheet"
-href="{{ url_for('static',
-filename='css/style.css') }}">
+{% block content %}
 
-</head>
+<div class="tool-container">
 
-<body>
+    <div class="tool-header">
 
-<div class="container">
+        <h1>SSL Certificate Inspector</h1>
 
-<div class="header">
+        <p>
+            Inspect TLS certificates, encryption details and certificate validity.
+        </p>
 
-<h1>SSL CERTIFICATE ANALYZER</h1>
+    </div>
+
+    <div class="tool-info">
+
+        <h3>Capabilities</h3>
+
+        <ul>
+
+            <li>Certificate Information</li>
+
+            <li>Issuer Details</li>
+
+            <li>Validity Period</li>
+
+            <li>TLS Version Detection</li>
+
+        </ul>
+
+    </div>
+
+    <form class="tool-form" action="/ssl" method="POST">
+
+        <label>Target Domain</label>
+
+        <input
+            class="tool-input"
+            type="text"
+            name="hostname"
+            placeholder="example.com"
+            required>
+
+        <button class="primary-btn">
+
+            Analyze SSL
+
+        </button>
+
+    </form>
+
+    <div class="tool-actions">
+
+        <a href="/" class="secondary-btn">
+
+            ← Back to Dashboard
+
+        </a>
+
+    </div>
 
 </div>
-<div class="nav-buttons">
-    <a href="/" class="dashboard-btn">
-        Dashboard
-    </a>
-</div>
 
-<div class="centered-form">
-
-<form method="POST">
-
-<h2>Target Domain</h2>
-
-<input
-type="text"
-name="domain"
-placeholder="google.com"
-required>
-
-<br><br>
-
-<button type="submit">
-
-Analyze SSL
-
-</button>
-
-</form>
-
-</div>
-
-</div>
-
-</body>
-<footer>
-
-CyberSentinel v1.0
-
-<br>
-
-SSL Analysis • TLS Inspection • Certificate Intelligence
-
-</footer>
-</html>
+{% endblock %}

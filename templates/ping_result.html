@@ -1,153 +1,226 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Ping Result</title>
+{% extends "base.html" %}
 
-    <link rel="stylesheet"
-    href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
+{% block title %}
+Ping Result
+{% endblock %}
 
-<div class="container">
+{% block page_title %}
+Ping Analyzer
+{% endblock %}
 
-<div class="header">
-    <h1>PING REPORT</h1>
+{% block subtitle %}
+Network Reachability Analysis
+{% endblock %}
+
+{% block content %}
+
+<div class="result-header">
+
+    <h1>Ping Analysis Report</h1>
+
+    <p>
+
+        Network reachability test completed successfully.
+        Review connectivity statistics, latency and packet transmission details.
+
+    </p>
+
 </div>
 
-<div class="stats-grid">
-     {% if report.error %}
-<p>{{ report.error }}</p>
-{% endif %}
+{% if report.error %}
 
-    <div class="stat-card">
-        <h3>Host</h3>
+<div class="result-card">
+
+    <h2>Error</h2>
+
+    <p>{{ report.error }}</p>
+
+</div>
+
+{% else %}
+
+<div class="summary-grid">
+
+    <div class="summary-card">
+
+        <h3>Target Host</h3>
+
         <p>{{ report.host }}</p>
+
     </div>
 
-    <div class="stat-card">
-        <h3>IP</h3>
+    <div class="summary-card">
+
+        <h3>Resolved IP</h3>
+
         <p>{{ report.ip }}</p>
+
     </div>
 
-    <div class="stat-card">
+    <div class="summary-card">
+
         <h3>Status</h3>
-        <p>{{ report.status }}</p>
+
+        {% if report.status == "Reachable" %}
+
+        <span class="badge-success">
+
+            {{ report.status }}
+
+        </span>
+
+        {% else %}
+
+        <span class="badge-danger">
+
+            {{ report.status }}
+
+        </span>
+
+        {% endif %}
+
     </div>
 
-    <div class="stat-card">
+    <div class="summary-card">
+
         <h3>Packet Loss</h3>
-        <p>{{ report["packet_loss"] }}</p>
+
+        <p>{{ report.packet_loss }}</p>
+
     </div>
 
 </div>
 
-</div>
+<div class="result-card">
 
-<div class="card">
+    <h2>Ping Statistics</h2>
 
-    <h2>Statistics</h2>
-
-    <table>
+    <table class="result-table">
 
         <tr>
-            <th>Metric</th>
-            <th>Value</th>
+
+            <td>Packets Sent</td>
+
+            <td>{{ report.packets_transmitted }}</td>
+
         </tr>
 
         <tr>
-    <td>Packets Sent</td>
-    <td>{{ report["packets_transmitted"] }}</td>
-</tr>
 
-<tr>
-    <td>Packets Received</td>
-    <td>{{ report["packets_received"] }}</td>
-</tr>
+            <td>Packets Received</td>
 
-<tr>
-    <td>RTT Min</td>
-    <td>{{ report["rtt_min"] }}</td>
-</tr>
+            <td>{{ report.packets_received }}</td>
 
-<tr>
-    <td>RTT Avg</td>
-    <td>{{ report["rtt_avg"] }}</td>
-</tr>
+        </tr>
 
-<tr>
-    <td>RTT Max</td>
-    <td>{{ report["rtt_max"] }}</td>
-</tr>
+        <tr>
 
-<tr>
-    <td>Jitter</td>
-    <td>{{ report["jitter"] }}</td>
-</tr>
+            <td>Minimum RTT</td>
 
-<tr>
-    <td>Total Time</td>
-    <td>{{ report["total_time"] }}</td>
-</tr>
+            <td>{{ report.rtt_min }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Average RTT</td>
+
+            <td>{{ report.rtt_avg }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Maximum RTT</td>
+
+            <td>{{ report.rtt_max }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Jitter</td>
+
+            <td>{{ report.jitter }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Total Time</td>
+
+            <td>{{ report.total_time }}</td>
+
+        </tr>
+
     </table>
 
 </div>
 
-<div class="action-buttons">
+<div class="result-buttons">
 
-    <a href="/ping" class="action-btn">
+    <a href="/ping" class="primary-btn">
+
         Run Another Ping
+
     </a>
 
-    <a href="/" class="action-btn">
+    <a href="/" class="primary-btn">
+
         Dashboard
+
     </a>
 
-    <button class="action-btn" onclick="downloadReport()">
-        Download Report
+    <button class="primary-btn" onclick="downloadReport()">
+
+        Download JSON
+
     </button>
 
 </div>
 
+{% endif %}
+
 <script type="application/json" id="report-data">
+
 {{ report | tojson }}
+
 </script>
 
 <script>
+
 function downloadReport(){
 
-    const raw = document.getElementById("report-data").textContent;
-    const data = JSON.parse(raw);
+    const raw=document.getElementById("report-data").textContent;
 
-    const blob = new Blob(
-        [JSON.stringify(data, null, 2)],
+    const data=JSON.parse(raw);
+
+    const blob=new Blob(
+
+        [JSON.stringify(data,null,2)],
+
         {type:"application/json"}
+
     );
 
-    const url = URL.createObjectURL(blob);
+    const url=URL.createObjectURL(blob);
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "ping_report.json";
+    const a=document.createElement("a");
+
+    a.href=url;
+
+    a.download="ping_report.json";
 
     document.body.appendChild(a);
+
     a.click();
+
     document.body.removeChild(a);
 
     URL.revokeObjectURL(url);
+
 }
+
 </script>
 
-
-</div>
-
-</body>
-<footer>
-
-    CyberSentinel v1.0
-
-    <br>
-
-    Network Reachability • Latency Analysis • RTT Statistics
-
-</footer>
-</html>
+{% endblock %}

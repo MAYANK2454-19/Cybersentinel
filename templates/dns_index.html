@@ -1,63 +1,74 @@
-<!DOCTYPE html>
-<html>
-<head>
+{% extends "base.html" %}
 
-<title>DNS Enumeration</title>
+{% block title %}
 
-<link rel="stylesheet"
-href="{{ url_for('static',
-filename='css/style.css') }}">
+DNS Enumeration
 
-</head>
-<body>
+{% endblock %}
 
-<div class="container">
+{% block content %}
 
-<div class="header">
+<div class="tool-container">
 
-<h1>DNS ENUMERATION</h1>
+    <div class="tool-header">
+
+        <h1>DNS Enumeration</h1>
+
+        <p>
+
+            Enumerate DNS records including A, AAAA, MX, NS, TXT and SOA.
+
+        </p>
+
+    </div>
+
+    <div class="tool-info">
+
+        <h3>Capabilities</h3>
+
+        <ul>
+
+            <li>A & AAAA Records</li>
+
+            <li>MX Records</li>
+
+            <li>TXT Records</li>
+
+            <li>SOA & NS Records</li>
+
+        </ul>
+
+    </div>
+
+    <form class="tool-form" action="/dns" method="POST">
+
+        <label>Domain Name</label>
+
+        <input
+            class="tool-input"
+            type="text"
+            name="domain"
+            placeholder="google.com"
+            required>
+
+        <button class="primary-btn">
+
+            Enumerate DNS
+
+        </button>
+
+    </form>
+
+    <div class="tool-actions">
+
+        <a href="/" class="secondary-btn">
+
+            ← Back to Dashboard
+
+        </a>
+
+    </div>
 
 </div>
-<div class="nav-buttons">
-    <a href="/" class="dashboard-btn">
-        Dashboard
-    </a>
-</div>
 
-<div class="centered-form">
-
-<form method="POST">
-
-<h2>Enter Domain</h2>
-
-<input
-type="text"
-name="domain"
-placeholder="google.com"
-required>
-
-<br><br>
-
-<button type="submit">
-
-Lookup
-
-</button>
-
-</form>
-
-</div>
-
-</div>
-
-</body>
-<footer>
-
-    CyberSentinel v1.0
-
-    <br>
-
-    DNS Enumeration • A Records • MX Records • NS Records • TXT Records
-
-</footer>
-</html>
+{% endblock %}

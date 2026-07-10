@@ -1,56 +1,74 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Ping Tool</title>
+{% extends "base.html" %}
 
-    <link rel="stylesheet"
-    href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
+{% block title %}
 
-<div class="container">
+Ping Analyzer
 
-    <div class="header">
-        <h1>PING TOOL</h1>
-        <p>Latency & Connectivity Analysis</p>
-    </div>
-<div class="nav-buttons">
-    <a href="/" class="dashboard-btn">
-        Dashboard
-    </a>
-</div>
-    <div class="centered-form">
+{% endblock %}
 
-        <form method="POST">
+{% block content %}
 
-            <h2>Target Host</h2>
+<div class="tool-container">
 
-            <input
-                type="text"
-                name="hostname"
-                placeholder="google.com"
-                required>
+    <div class="tool-header">
 
-            <br><br>
+        <h1>Ping Analyzer</h1>
 
-            <button type="submit">
-                Start Ping
-            </button>
-
-        </form>
+        <p>
+            Test host availability and measure network latency using ICMP echo requests.
+        </p>
 
     </div>
 
+    <div class="tool-info">
+
+        <h3>Capabilities</h3>
+
+        <ul>
+
+            <li>Host Availability</li>
+
+            <li>Latency Measurement</li>
+
+            <li>Packet Statistics</li>
+
+            <li>Network Diagnostics</li>
+
+        </ul>
+
+    </div>
+
+    <form class="tool-form" action="/ping" method="POST">
+
+        <label>Target Host</label>
+
+        <input
+            class="tool-input"
+            type="text"
+            name="hostname"
+            placeholder="example.com or 8.8.8.8"
+            required>
+
+        <button
+            class="primary-btn"
+            type="submit">
+
+            Start Ping
+
+        </button>
+
+    </form>
+
+    <div class="tool-actions">
+
+        <a href="/" class="secondary-btn">
+
+            ← Back to Dashboard
+
+        </a>
+
+    </div>
+
 </div>
 
-</body>
-<footer>
-
-    CyberSentinel v1.0
-
-    <br>
-
-    Network Reachability • Latency Analysis • RTT Statistics
-
-</footer>
-</html>
+{% endblock %}

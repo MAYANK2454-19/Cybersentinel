@@ -1,177 +1,267 @@
-<!DOCTYPE html>
-<html>
+```html
+{% extends "base.html" %}
 
-<head>
+{% block title %}
+Security Headers Report
+{% endblock %}
 
-<title>Security Headers Report</title>
+{% block page_title %}
+Security Headers Analyzer
+{% endblock %}
 
-<link rel="stylesheet"
-href="{{ url_for('static',
-filename='css/style.css') }}">
+{% block subtitle %}
+HTTP Response Security Assessment
+{% endblock %}
 
-</head>
+{% block content %}
 
-<body>
+<div class="result-header">
 
-<div class="container">
-
-<div class="header">
-
-<h1>SECURITY HEADERS REPORT</h1>
-
-</div>
-
-<div class="stats-grid">
-
-<div class="stat-card">
-
-<h3>Domain</h3>
-
-<p>{{ report["domain"] }}</p>
-
-</div>
-
-<div class="stat-card">
-
-    <h3>Score</h3>
+    <h1>Security Headers Report</h1>
 
     <p>
-        {{ report["score"] }}
-        /
-        {{ report["total"] }}
+
+        HTTP response headers have been analyzed to evaluate the
+        security posture of the target web application.
+
     </p>
 
 </div>
-<div class="stat-card">
-    <h3>Grade</h3>
-    <p>{{ report["grade"] }}</p>
-</div>
 
-<div class="stat-card">
-    <h3>Status Code</h3>
-    <p>{{ report["status_code"] }}</p>
-</div>
 
-<div class="stat-card">
-    <h3>Server</h3>
-    <p>{{ report["server"] }}</p>
-</div>
+<div class="summary-grid">
 
-</div>
+    <div class="summary-card">
 
-<div class="card">
+        <h3>Target</h3>
 
-<h2>Header Analysis</h2>
+        <p>{{ report.domain }}</p>
 
-<table>
+    </div>
 
-<tr>
+    <div class="summary-card">
 
-<th>Header</th>
-<th>Status</th>
-<th>Value</th>
+        <h3>Security Score</h3>
 
-</tr>
+        <p>{{ report.score }}/{{ report.total }}</p>
 
-{% for header, value in report["headers"].items() %}
+    </div>
 
-<tr>
+    <div class="summary-card">
 
-<td>{{ header }}</td>
+        <h3>Grade</h3>
 
-<td>
+        {% if report.grade in ["A","A+","B"] %}
 
-{% if value %}
+            <span class="badge-success">
 
-<span class="https-badge">
+                {{ report.grade }}
 
-Present
+            </span>
 
-</span>
+        {% elif report.grade == "C" %}
 
-{% else %}
+            <span class="badge-warning">
 
-<span class="http-badge">
+                {{ report.grade }}
 
-Missing
+            </span>
 
-</span>
+        {% else %}
 
-{% endif %}
+            <span class="badge-danger">
 
-</td>
+                {{ report.grade }}
 
-<td>
+            </span>
 
-{{ value if value else "Not Found" }}
+        {% endif %}
 
-</td>
+    </div>
 
-</tr>
+    <div class="summary-card">
 
-{% endfor %}
+        <h3>Status Code</h3>
 
-</table>
+        <p>{{ report.status_code }}</p>
+
+    </div>
+
+    <div class="summary-card">
+
+        <h3>Web Server</h3>
+
+        <p>{{ report.server }}</p>
+
+    </div>
 
 </div>
 
-<div class="action-buttons">
 
-    <a href="/headers" class="action-btn">
-        Run Another Header Analysis
+
+<div class="result-card">
+
+    <h2>Security Header Analysis</h2>
+
+    <table class="result-table">
+
+        <thead>
+
+        <tr>
+
+            <th>Header</th>
+
+            <th>Status</th>
+
+            <th>Value</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for header,value in report.headers.items() %}
+
+        <tr>
+
+            <td>
+
+                <strong>{{ header }}</strong>
+
+            </td>
+
+            <td>
+
+                {% if value %}
+
+                    <span class="badge-success">
+
+                        Present
+
+                    </span>
+
+                {% else %}
+
+                    <span class="badge-danger">
+
+                        Missing
+
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                {% if value %}
+
+                    <code>{{ value }}</code>
+
+                {% else %}
+
+                    Not Configured
+
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+
+<div class="result-card">
+
+    <h2>Assessment Summary</h2>
+
+    <p>
+
+        Missing security headers may increase exposure to attacks such
+        as clickjacking, MIME sniffing, XSS and insecure transport.
+        Review missing headers and implement them where applicable.
+
+    </p>
+
+</div>
+
+
+
+<div class="result-buttons">
+
+
+    <a href="/headers" class="primary-btn">
+
+        Analyze Another Website
+
     </a>
 
-    <a href="/" class="action-btn">
+    <a href="/" class="primary-btn">
+
         Dashboard
+
     </a>
 
-    <button class="action-btn" onclick="downloadReport()">
-        Download Report
+    <button class="primary-btn"
+            onclick="downloadReport()">
+
+        Download JSON
+
     </button>
 
 </div>
 
+
+
 <script type="application/json" id="report-data">
+
 {{ report | tojson }}
+
 </script>
 
 <script>
+
 function downloadReport(){
 
-    const raw = document.getElementById("report-data").textContent;
-    const data = JSON.parse(raw);
+    const raw=document.getElementById("report-data").textContent;
 
-    const blob = new Blob(
-        [JSON.stringify(data, null, 2)],
+    const data=JSON.parse(raw);
+
+    const blob=new Blob(
+
+        [JSON.stringify(data,null,2)],
+
         {type:"application/json"}
+
     );
 
-    const url = URL.createObjectURL(blob);
+    const url=URL.createObjectURL(blob);
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "headers_report.json";
+    const a=document.createElement("a");
+
+    a.href=url;
+
+    a.download="headers_report.json";
 
     document.body.appendChild(a);
+
     a.click();
+
     document.body.removeChild(a);
 
     URL.revokeObjectURL(url);
+
 }
+
 </script>
 
-</div>
-
-<footer>
-
-CyberSentinel v1.0
-
-<br>
-
-Security Headers • Web Security • HTTP Analysis
-
-</footer>
-
-</body>
-
-</html>
+{% endblock %}
+```

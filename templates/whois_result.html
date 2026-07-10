@@ -1,147 +1,228 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>WHOIS Result</title>
+```html
+{% extends "base.html" %}
 
-    <link rel="stylesheet"
-    href="{{ url_for('static',
-    filename='css/style.css') }}">
-</head>
-<body>
+{% block title %}
+WHOIS Report
+{% endblock %}
 
-<div class="container">
+{% block page_title %}
+WHOIS Lookup
+{% endblock %}
 
-<div class="header">
+{% block subtitle %}
+Domain Registration Intelligence
+{% endblock %}
 
-<h1>WHOIS REPORT</h1>
+{% block content %}
 
-</div>
+<div class="result-header">
 
-<div class="card">
+    <h1>WHOIS Report</h1>
 
-<table>
+    <p>
 
-<tr>
-<th>Field</th>
-<th>Value</th>
-</tr>
+        Domain registration information collected successfully.
+        Review registrar information, registration timeline and
+        authoritative name servers.
 
-<tr>
-<td>Domain</td>
-<td>{{ report["domain"] }}</td>
-</tr>
-
-<tr>
-<td>Registrar</td>
-<td>{{ report["registrar"] }}</td>
-</tr>
-
-<tr>
-<td>Created</td>
-<td>{{ report["creation_date"] }}</td>
-</tr>
-
-<tr>
-<td>Expires</td>
-<td>{{ report["expiration_date"] }}</td>
-</tr>
-
-<tr>
-<td>Updated</td>
-<td>{{ report["updated_date"] }}</td>
-</tr>
-
-</table>
+    </p>
 
 </div>
 
-<div class="card">
 
-<h2>Name Servers</h2>
+<div class="summary-grid">
 
-<ul>
+    <div class="summary-card">
 
-{% for ns in report["name_servers"] %}
+        <h3>Domain</h3>
 
-<li>{{ ns }}</li>
+        <p>{{ report.domain }}</p>
 
-{% endfor %}
+    </div>
 
-</ul>
+    <div class="summary-card">
 
-</div>
+        <h3>Registrar</h3>
 
-<div class="action-buttons">
+        <p>{{ report.registrar }}</p>
 
-<a href="/whois"
-class="action-btn">
+    </div>
 
-Run Another Search
+    <div class="summary-card">
 
-</a>
+        <h3>Created</h3>
 
-<a href="/"
-class="action-btn">
+        <p>{{ report.creation_date }}</p>
 
-Dashboard
+    </div>
 
-</a>
-<button class="action-btn" onclick="downloadReport()">
+    <div class="summary-card">
 
-Download JSON Report
+        <h3>Expires</h3>
 
-</button>
+        <p>{{ report.expiration_date }}</p>
+
+    </div>
 
 </div>
 
+
+
+<div class="result-card">
+
+    <h2>Registration Information</h2>
+
+    <table class="result-table">
+
+        <tr>
+
+            <td>Domain</td>
+
+            <td>{{ report.domain }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Registrar</td>
+
+            <td>{{ report.registrar }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Creation Date</td>
+
+            <td>{{ report.creation_date }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Last Updated</td>
+
+            <td>{{ report.updated_date }}</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Expiration Date</td>
+
+            <td>{{ report.expiration_date }}</td>
+
+        </tr>
+
+    </table>
+
 </div>
 
-</body>
+
+
+<div class="result-card">
+
+    <h2>Authoritative Name Servers</h2>
+
+    <div class="san-container">
+
+        {% for ns in report.name_servers %}
+
+            <span class="san-tag">
+
+                {{ ns }}
+
+            </span>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+
+<div class="result-card">
+
+    <h2>Privacy Notice</h2>
+
+    <p>
+
+        Modern WHOIS databases often redact registrant names,
+        addresses, phone numbers and email addresses to comply
+        with privacy regulations and registry policies.
+        This report displays only publicly available registration
+        metadata.
+
+    </p>
+
+</div>
+
+
+
+<div class="result-buttons">
+
+    <a href="/whois" class="primary-btn">
+
+        Run Another Lookup
+
+    </a>
+
+    <a href="/" class="primary-btn">
+
+        Dashboard
+
+    </a>
+
+    <button class="primary-btn"
+            onclick="downloadReport()">
+
+        Download JSON
+
+    </button>
+
+</div>
+
+
+
 <script type="application/json" id="report-data">
+
 {{ report | tojson }}
+
 </script>
 
 <script>
 
-function downloadReport() {
+function downloadReport(){
 
-    const raw =
-    document.getElementById(
-        "report-data"
-    ).textContent;
+    const raw=document.getElementById("report-data").textContent;
 
-    const data =
-    JSON.parse(raw);
+    const data=JSON.parse(raw);
 
-    const blob =
-    new Blob(
+    const blob=new Blob(
         [JSON.stringify(data,null,2)],
         {type:"application/json"}
     );
 
-    const url =
-    URL.createObjectURL(blob);
+    const url=URL.createObjectURL(blob);
 
-    const a =
-    document.createElement("a");
+    const a=document.createElement("a");
 
-    a.href = url;
-    a.download =
-    "whois_report.json";
+    a.href=url;
+
+    a.download="whois_report.json";
+
+    document.body.appendChild(a);
 
     a.click();
 
+    document.body.removeChild(a);
+
     URL.revokeObjectURL(url);
+
 }
 
 </script>
-<footer>
 
-    CyberSentinel v1.0
-
-    <br>
-
-    WHOIS Lookup • Registrar Information • Domain Ownership
-
-</footer>
-</html>
+{% endblock %}
+```

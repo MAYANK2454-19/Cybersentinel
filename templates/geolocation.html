@@ -1,58 +1,74 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>IP Geolocation</title>
+{% extends "base.html" %}
 
-    <link rel="stylesheet"
-    href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
+{% block title %}
 
-<div class="container">
+IP Geolocation
 
-<div class="header">
-    <h1>IP GEOLOCATION</h1>
-    <p>Locate IP Addresses Worldwide</p>
+{% endblock %}
+
+{% block content %}
+
+<div class="tool-container">
+
+    <div class="tool-header">
+
+        <h1>IP Geolocation</h1>
+
+        <p>
+
+            Discover geographical and network information for any public IP address.
+
+        </p>
+
+    </div>
+
+    <div class="tool-info">
+
+        <h3>Capabilities</h3>
+
+        <ul>
+
+            <li>Country & Region</li>
+
+            <li>City & Timezone</li>
+
+            <li>ISP Information</li>
+
+            <li>Latitude & Longitude</li>
+
+        </ul>
+
+    </div>
+
+    <form class="tool-form" action="/geo" method="POST">
+
+        <label>Public IP Address</label>
+
+        <input
+            class="tool-input"
+            type="text"
+            name="ip"
+            placeholder="8.8.8.8"
+            required>
+
+        <button class="primary-btn">
+
+            Lookup IP
+
+        </button>
+
+    </form>
+
+    <div class="tool-actions">
+
+        <a href="/" class="secondary-btn">
+
+            ← Back to Dashboard
+
+        </a>
+
+    </div>
+
 </div>
-<div class="nav-buttons">
-    <a href="/" class="dashboard-btn">
-        Dashboard
-    </a>
-</div>
 
-<div class="centered-form">
-
-<form method="POST">
-
-    <h2>Target IP Address</h2>
-
-    <input
-        type="text"
-        name="ip"
-        placeholder="8.8.8.8"
-        required
-    >
-
-    <br><br>
-
-    <button type="submit">
-        Lookup IP
-    </button>
-
-</form>
-
-</div>
-
-</div>
-
-</body>
-<footer>
-
-    CyberSentinel v1.0
-
-    <br>
-
-    IP Geolocation • ASN Lookup • ISP Information • Location Intelligence
-
-</footer>
-</html>
+{% endblock %}

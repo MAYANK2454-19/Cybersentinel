@@ -1,166 +1,311 @@
-<!DOCTYPE html>
-<html>
-<head>
+```html
+{% extends "base.html" %}
 
-<title>DNS Results</title>
+{% block title %}
+DNS Report
+{% endblock %}
 
-<link rel="stylesheet"
-href="{{ url_for('static',
-filename='css/style.css') }}">
+{% block page_title %}
+DNS Enumeration
+{% endblock %}
 
-</head>
-<body>
+{% block subtitle %}
+DNS Intelligence & Record Enumeration
+{% endblock %}
 
-<div class="container">
+{% block content %}
 
-<div class="header">
+<div class="result-header">
 
-<h1>DNS REPORT</h1>
+    <h1>DNS Enumeration Report</h1>
+
+    <p>
+
+        DNS records have been successfully collected for the target
+        domain. The information below can assist during infrastructure
+        discovery and external reconnaissance.
+
+    </p>
 
 </div>
 
-<div class="card">
 
-<h2>Domain</h2>
 
-<p>{{ report["domain"] }}</p>
+<div class="summary-grid">
+
+    <div class="summary-card">
+
+        <h3>Target Domain</h3>
+
+        <p>{{ report.domain }}</p>
+
+    </div>
+
+    <div class="summary-card">
+
+        <h3>A Records</h3>
+
+        <p>{{ report.A|length }}</p>
+
+    </div>
+
+    <div class="summary-card">
+
+        <h3>MX Records</h3>
+
+        <p>{{ report.MX|length }}</p>
+
+    </div>
+
+    <div class="summary-card">
+
+        <h3>Name Servers</h3>
+
+        <p>{{ report.NS|length }}</p>
+
+    </div>
 
 </div>
 
-<div class="card">
 
-<h2>A Records</h2>
 
-<ul>
+<div class="result-card">
 
-{% for record in report["A"] %}
+<h2>DNS Records</h2>
 
-<li>{{ record }}</li>
+
+<details open>
+
+<summary><strong>A Records</strong></summary>
+
+<table class="result-table">
+
+{% for record in report.A %}
+
+<tr>
+
+<td>{{ record }}</td>
+
+</tr>
+
+{% else %}
+
+<tr>
+
+<td>No records found.</td>
+
+</tr>
 
 {% endfor %}
 
-</ul>
+</table>
 
-</div>
+</details>
 
-<div class="card">
 
-<h2>AAAA Records</h2>
+<details>
 
-<ul>
+<summary><strong>AAAA Records</strong></summary>
 
-{% for record in report["AAAA"] %}
+<table class="result-table">
 
-<li>{{ record }}</li>
+{% for record in report.AAAA %}
 
-{% endfor %}
+<tr>
 
-</ul>
+<td>{{ record }}</td>
 
-</div>
+</tr>
 
-<div class="card">
+{% else %}
 
-<h2>MX Records</h2>
+<tr>
 
-<ul>
+<td>No records found.</td>
 
-{% for record in report["MX"] %}
-
-<li>{{ record }}</li>
+</tr>
 
 {% endfor %}
 
-</ul>
+</table>
 
-</div>
+</details>
 
-<div class="card">
 
-<h2>NS Records</h2>
+<details>
 
-<ul>
+<summary><strong>MX Records</strong></summary>
 
-{% for record in report["NS"] %}
+<table class="result-table">
 
-<li>{{ record }}</li>
+{% for record in report.MX %}
 
-{% endfor %}
+<tr>
 
-</ul>
+<td>{{ record }}</td>
 
-</div>
+</tr>
 
-<div class="card">
+{% else %}
 
-<h2>TXT Records</h2>
+<tr>
 
-<ul>
+<td>No records found.</td>
 
-{% for record in report["TXT"] %}
-
-<li>{{ record }}</li>
+</tr>
 
 {% endfor %}
 
-</ul>
+</table>
+
+</details>
+
+
+<details>
+
+<summary><strong>NS Records</strong></summary>
+
+<table class="result-table">
+
+{% for record in report.NS %}
+
+<tr>
+
+<td>{{ record }}</td>
+
+</tr>
+
+{% else %}
+
+<tr>
+
+<td>No records found.</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</details>
+
+
+<details>
+
+<summary><strong>TXT Records</strong></summary>
+
+<table class="result-table">
+
+{% for record in report.TXT %}
+
+<tr>
+
+<td>{{ record }}</td>
+
+</tr>
+
+{% else %}
+
+<tr>
+
+<td>No records found.</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</details>
 
 </div>
 
-<div class="action-buttons">
 
-    <a href="/dns" class="action-btn">
-        Run Another Search
-    </a>
 
-    <a href="/" class="action-btn">
-        Dashboard
-    </a>
+<div class="result-card">
 
-    <button class="action-btn" onclick="downloadReport()">
-        Download Report
-    </button>
+<h2>Reconnaissance Summary</h2>
+
+<p>
+
+DNS records reveal important information about the target
+infrastructure including IP addresses, mail servers,
+authoritative name servers and verification records.
+This information is commonly used during reconnaissance
+before service enumeration and vulnerability assessment.
+
+</p>
 
 </div>
 
+
+
+<div class="result-buttons">
+
+<a href="/dns" class="primary-btn">
+
+Run Another Lookup
+
+</a>
+
+<a href="/" class="primary-btn">
+
+Dashboard
+
+</a>
+
+<button class="primary-btn"
+onclick="downloadReport()">
+
+Download JSON
+
+</button>
+
 </div>
 
-</body>
+
+
 <script type="application/json" id="report-data">
+
 {{ report | tojson }}
+
 </script>
 
 <script>
+
 function downloadReport(){
 
-    const raw = document.getElementById("report-data").textContent;
-    const data = JSON.parse(raw);
+const raw=document.getElementById("report-data").textContent;
 
-    const blob = new Blob(
-        [JSON.stringify(data, null, 2)],
-        {type:"application/json"}
-    );
+const data=JSON.parse(raw);
 
-    const url = URL.createObjectURL(blob);
+const blob=new Blob(
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "dns_report.json";
+[JSON.stringify(data,null,2)],
 
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+{type:"application/json"}
 
-    URL.revokeObjectURL(url);
+);
+
+const url=URL.createObjectURL(blob);
+
+const a=document.createElement("a");
+
+a.href=url;
+
+a.download="dns_report.json";
+
+document.body.appendChild(a);
+
+a.click();
+
+document.body.removeChild(a);
+
+URL.revokeObjectURL(url);
+
 }
+
 </script>
-<footer>
 
-    CyberSentinel v1.0
-
-    <br>
-
-    DNS Enumeration • A Records • MX Records • NS Records • TXT Records
-
-</footer>
-</html>
+{% endblock %}
+```

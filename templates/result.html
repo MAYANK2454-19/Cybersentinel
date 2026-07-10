@@ -1,85 +1,104 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Scan Results</title>
-    <link rel="stylesheet"
-      href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
+```html
+{% extends "base.html" %}
 
-<div class="container">
+{% block title %}
+Port Scan Report
+{% endblock %}
 
-    <div class="header">
-        <h1>SCAN RESULTS</h1>
-    </div>
-<div class="stats-grid">
+{% block page_title %}
+Port Scanner
+{% endblock %}
 
-    <div class="stat-card">
-        <h3> Hostname</h3>
-        <p>{{ report["hostname"] }}</p>
-    </div>
+{% block subtitle %}
+Network Reconnaissance Report
+{% endblock %}
 
-    <div class="stat-card">
-        <h3> IP Address</h3>
-        <p>{{ report["ip"] }}</p>
-    </div>
-    <div class="stat-card">
-        <h3> Host Status</h3>
-        <p>{{ report["host_status"] }}</p>
-    </div>
-    <div class="stat-card">
-        <h3> Reverse DNS</h3>
-        <p>{{ report["reverse_dns"] }}</p>
-    </div>
+{% block content %}
 
-    <div class="stat-card">
-        <h3> Open Ports</h3>
-        <p>{{ report["open_ports"]|length }}</p>
-    </div>
-    <div class="stat-card">
-        <h3> Scan Time</h3>
-        <p>{{ report["scan_time"] }}</p>
-    </div>
-    <div class="status-card">
+<div class="result-header">
 
-    <h3>
-         Scan Complete
-    </h3>
+    <h1>Port Scan Report</h1>
+
+    <p>
+        Scan completed successfully. Review discovered hosts,
+        running services, technologies and HTTP response information.
+    </p>
 
 </div>
 
+<div class="summary-grid">
+
+    <div class="summary-card">
+        <h3>Hostname</h3>
+        <p>{{ report.hostname }}</p>
+    </div>
+
+    <div class="summary-card">
+        <h3>IP Address</h3>
+        <p>{{ report.ip }}</p>
+    </div>
+
+    <div class="summary-card">
+        <h3>Reverse DNS</h3>
+        <p>{{ report.reverse_dns }}</p>
+    </div>
+
+    <div class="summary-card">
+        <h3>Host Status</h3>
+
+        {% if report.host_status == "Online" %}
+
+            <span class="badge-success">
+                {{ report.host_status }}
+            </span>
+
+        {% else %}
+
+            <span class="badge-danger">
+                {{ report.host_status }}
+            </span>
+
+        {% endif %}
+
+    </div>
+
+    <div class="summary-card">
+        <h3>Open Ports</h3>
+        <p>{{ report.open_ports|length }}</p>
+    </div>
+
+    <div class="summary-card">
+        <h3>Scan Duration</h3>
+        <p>{{ report.scan_time }}</p>
+    </div>
+
 </div>
-    <!-- <div class="card">
-
-        <h2>Target Information</h2>
-
-        <p><strong>Hostname:</strong> {{ report["hostname"] }}</p>
-        <p><strong>IP Address:</strong> {{ report["ip"] }}</p>
-        <p><strong>Reverse DNS:</strong> {{ report["reverse_dns"] }}</p>
-        <p><strong>Total Open Ports:</strong>{{ report["open_ports"]|length }}</p>
-        <p><strong>Scan Time:</strong>{{ report["scan_time"] }}</p>
 
 
-    </div> -->
+<div class="result-card">
 
-    
+    <h2>Discovered Services</h2>
 
-        <div class="card">
+    <table class="result-table">
 
-    <h2> Open Ports</h2>
-
-    <table>
+        <thead>
 
         <tr>
+
             <th>Port</th>
             <th>Service</th>
             <th>Server</th>
             <th>Technology</th>
             <th>Content Type</th>
             <th>Length</th>
+
         </tr>
 
-        {% for port, info in report["open_ports"].items() %}
+        </thead>
+
+        <tbody>
+
+        {% for port, info in report.open_ports.items() %}
 
         <tr>
 
@@ -87,50 +106,51 @@
 
             <td>
 
-                {% if info["service"] == "HTTPS" %}
+                {% if info.service == "HTTPS" %}
+
                     <span class="https-badge">
-                        {{ info["service"] }}
+                        {{ info.service }}
                     </span>
 
                 {% else %}
+
                     <span class="http-badge">
-                        {{ info["service"] }}
+                        {{ info.service }}
                     </span>
+
                 {% endif %}
 
             </td>
 
-            <td>
-                {{ info["headers"].get("server", "Unknown") }}
-            </td>
-             <td>{{ info["technology"] }}</td>
-            <td>
-                {{ info["headers"].get("content-type", "N/A") }}
-            </td>
+            <td>{{ info.headers.get("server","Unknown") }}</td>
 
-            <td>
-                {{ info["headers"].get("content-length", "N/A") }}
-            </td>
+            <td>{{ info.technology }}</td>
+
+            <td>{{ info.headers.get("content-type","N/A") }}</td>
+
+            <td>{{ info.headers.get("content-length","N/A") }}</td>
 
         </tr>
 
         <tr>
-            <td colspan="5">
+
+            <td colspan="6">
 
                 <details>
 
-                    <summary>
-                        View Headers
-                    </summary>
+                    <summary>View Response Headers</summary>
 
                     <div class="header-box">
 
-                        {% for key, value in info["headers"].items() %}
+                        {% for key,value in info.headers.items() %}
 
-                            <div class="header-row">
-    <strong>{{ key }}</strong>
-    <span>{{ value }}</span>
-</div>
+                        <div class="header-row">
+
+                            <strong>{{ key }}</strong>
+
+                            <span>{{ value }}</span>
+
+                        </div>
 
                         {% endfor %}
 
@@ -139,75 +159,78 @@
                 </details>
 
             </td>
+
         </tr>
 
         {% endfor %}
+
+        </tbody>
 
     </table>
 
 </div>
 
-    </div>
- <div class="action-buttons">
 
-    <a href="/portscan" class="action-btn">
+<div class="result-buttons">
+
+    <a href="/portscan" class="primary-btn">
+
         Run Another Scan
+
     </a>
 
-    <a href="/" class="action-btn">
+    <a href="/" class="primary-btn">
+
         Dashboard
+
     </a>
 
-    <button class="action-btn" onclick="downloadReport()">
-        Download JSON Report
+    <button class="primary-btn"
+            onclick="downloadReport()">
+
+        Download JSON
+
     </button>
 
 </div>
-  
 
 
-
-
-</div>
 <script type="application/json" id="report-data">
-    {{ report | tojson }}
+{{ report | tojson }}
 </script>
+
 <script>
-function downloadReport() {
 
-   
+function downloadReport(){
 
-    const raw = document.getElementById("report-data").textContent;
-    const data = JSON.parse(raw);
+    const raw=document.getElementById("report-data").textContent;
 
-    const blob = new Blob(
-        [JSON.stringify(data, null, 2)],
-        { type: "application/json" }
+    const data=JSON.parse(raw);
+
+    const blob=new Blob(
+        [JSON.stringify(data,null,2)],
+        {type:"application/json"}
     );
 
-    const url = URL.createObjectURL(blob);
+    const url=URL.createObjectURL(blob);
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "cyber_scan_report.json";
+    const a=document.createElement("a");
+
+    a.href=url;
+
+    a.download="cyber_scan_report.json";
 
     document.body.appendChild(a);
+
     a.click();
+
     document.body.removeChild(a);
 
     URL.revokeObjectURL(url);
+
 }
 
 </script>
 
-</body>
-<footer>
-
-    CyberSentinel v1.0
-
-    <br>
-
-    Port Scanning • Banner Analysis • Reverse DNS
-
-</footer>
-</html>
+{% endblock %}
+```

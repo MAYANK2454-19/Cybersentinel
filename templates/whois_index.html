@@ -1,61 +1,74 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>WHOIS Lookup</title>
+{% extends "base.html" %}
 
-    <link rel="stylesheet"
-    href="{{ url_for('static',
-    filename='css/style.css') }}">
-</head>
-<body>
+{% block title %}
 
-<div class="container">
+WHOIS Lookup
 
-<div class="header">
+{% endblock %}
 
-    <h1>WHOIS LOOKUP</h1>
-    <p>Domain Information</p>
+{% block content %}
+
+<div class="tool-container">
+
+    <div class="tool-header">
+
+        <h1>WHOIS Lookup</h1>
+
+        <p>
+
+            Retrieve domain registration information and registrar details.
+
+        </p>
+
+    </div>
+
+    <div class="tool-info">
+
+        <h3>Capabilities</h3>
+
+        <ul>
+
+            <li>Registrar Information</li>
+
+            <li>Creation Date</li>
+
+            <li>Expiry Date</li>
+
+            <li>Name Servers</li>
+
+        </ul>
+
+    </div>
+
+    <form class="tool-form" action="/whois" method="POST">
+
+        <label>Domain Name</label>
+
+        <input
+            class="tool-input"
+            type="text"
+            name="domain"
+            placeholder="google.com"
+            required>
+
+        <button class="primary-btn">
+
+            Lookup Domain
+
+        </button>
+
+    </form>
+
+    <div class="tool-actions">
+
+        <a href="/" class="secondary-btn">
+
+            ← Back to Dashboard
+
+        </a>
+
+    </div>
 
 </div>
-<div class="nav-buttons">
-    <a href="/" class="dashboard-btn">
-        Dashboard
-    </a>
-</div>
-<div class="centered-form">
 
-<form method="POST">
-
-    <h2>Enter Domain</h2>
-
-    <input
-        type="text"
-        name="domain"
-        placeholder="google.com"
-        required>
-
-    <br><br>
-
-    <button type="submit">
-
-        Lookup
-
-    </button>
-
-</form>
-
-</div>
-
-</div>
-
-</body>
-<footer>
-
-    CyberSentinel v1.0
-
-    <br>
-
-    WHOIS Lookup • Registrar Information • Domain Ownership
-
-</footer>
-</html>
+{% endblock %}

@@ -1,66 +1,103 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>PORT SCANNER</title>
-    <link rel="stylesheet"
-      href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
 
-<div class="container">
+{% block title %}
 
-    <div class="header">
-        <h1>PORT SCANNER</h1>
-        <p>Advanced Network Reconnaissance Tool</p>
+Port Scan
+
+{% endblock %}
+
+{% block content %}
+
+<div class="tool-container">
+
+    <div class="tool-header">
+
+        <h1>Port Scanner</h1>
+
+        <p>
+            Discover open TCP ports, identify running services and perform basic network reconnaissance.
+        </p>
+
     </div>
-<div class="nav-buttons">
-    <a href="/" class="dashboard-btn">
-        Dashboard
+
+    <div class="tool-info">
+
+        <h3>Capabilities</h3>
+
+        <ul>
+
+            <li>TCP Connect Scan</li>
+
+            <li>Banner Grabbing</li>
+
+            <li>Service Detection</li>
+
+            <li>JSON Report Export</li>
+
+        </ul>
+
+    </div>
+
+   <form class="tool-form" action="/portscan" method="POST">
+
+    <label>Target Host</label>
+
+    <input
+        class="tool-input"
+        type="text"
+        name="hostname"
+        placeholder="example.com "
+        required>
+
+    <div class="port-grid">
+
+        <div>
+
+            <label>Start Port</label>
+
+            <input
+                class="tool-input"
+                type="number"
+                name="start_port"
+                value="1"
+                min="1"
+                max="65535"
+                required>
+
+        </div>
+
+        <div>
+
+            <label>End Port</label>
+
+            <input
+                class="tool-input"
+                type="number"
+                name="end_port"
+                value="1000"
+                min="1"
+                max="65535"
+                required>
+
+        </div>
+
+    </div>
+
+    <button class="primary-btn" type="submit">
+
+        Start Scan
+
+    </button>
+
+</form>
+    <div class="tool-actions">
+
+    <a href="/" class="secondary-btn">
+        ← Back to Dashboard
     </a>
-</div>
-    <div  class ="centered-form">
-
-        <form method="POST">
-
-            <h2>Target Information</h2>
-
-            <input type="text"
-                   name="hostname"
-                   placeholder="google.com"
-                   required>
-
-            <br><br>
-
-            <input type="number"
-                   name="start_port"
-                   value="1"
-                   required>
-
-            <input type="number"
-                   name="end_port"
-                   value="1000"
-                   required>
-
-            <br><br>
-
-            <button type="submit">
-                Start Scan
-            </button>
-
-        </form>
-
-    </div>
 
 </div>
 
-</body>
-<footer>
+</div>
 
-    CyberSentinel v1.0
-
-    <br>
-
-    Port Scanning • Banner Analysis • Reverse DNS
-
-</footer>
-</html>
+{% endblock %}
