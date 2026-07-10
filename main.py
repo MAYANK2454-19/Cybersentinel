@@ -1,12 +1,12 @@
 from flask import Flask, render_template, request
-from geolocation.geolocation import ip_lookup
-from scanner.scanner import run_scan
+from scanner.scanner import run_scan 
 from ping_tool.ping import ping_host
-from subdomain_finder.subfinder import find_subdomains
-from whois_tool.whois_lookup import whois_lookup
-from dns_tool.dns_lookup import dns_lookup
-from ssl_analyzer.ssl_lookup import analyze_ssl
-from security_headers.headers import analyze_headers
+from whois_tool.whois_lookup import whois_lookup as whois_service
+from dns_tool.dns_lookup import dns_lookup as dns_service
+from ssl_analyzer.ssl_lookup import analyze_ssl as ssl_service
+from security_headers.headers import analyze_headers as headers_service
+from geolocation.geolocation import ip_lookup as geo_service
+from subdomain_finder.subfinder import find_subdomains as subdomain_service
 
 import os
 
@@ -22,20 +22,32 @@ def portscan():
 
     if request.method == "POST":
 
-        hostname = request.form["hostname"]
-        start_port = int(request.form["start_port"])
-        end_port = int(request.form["end_port"])
+        try:
 
-        report = run_scan(
-            hostname,
-            start_port,
-            end_port
-        )
+            hostname = request.form["hostname"].strip()
+            start_port = int(request.form["start_port"])
+            end_port = int(request.form["end_port"])
 
-        return render_template(
-            "result.html",
-            report=report
-        )
+            if not hostname:
+                raise ValueError("Please enter a valid hostname.")
+
+            report = run_scan(
+                hostname,
+                start_port,
+                end_port
+            )
+
+            return render_template(
+                "result.html",
+                report=report
+            )
+
+        except Exception as e:
+
+            return render_template(
+                "error.html",
+                message=str(e)
+            )
 
     return render_template("portscan.html")
 
@@ -45,117 +57,264 @@ def ping():
 
     if request.method == "POST":
 
-        hostname = request.form["hostname"]
+        try:
 
-        report = ping_host(hostname)
+            hostname = request.form["hostname"].strip()
 
-        return render_template(
-            "ping_result.html",
-            report=report
-        )
+            if not hostname:
+                raise ValueError("Please enter a valid hostname or IP address.")
+
+            report = ping_host(hostname)
+
+            return render_template(
+                "ping_result.html",
+                report=report
+            )
+
+        except ValueError as e:
+
+            return render_template(
+                "error.html",
+                message=str(e)
+            )
+
+        except Exception:
+
+            return render_template(
+                "error.html",
+                message="Unable to ping the target. Please verify the hostname and try again."
+            )
 
     return render_template("ping.html")
-@app.route("/geolocation", methods=["GET", "POST"])
+
+@app.route("/geo", methods=["GET", "POST"])
 def geolocation():
 
     if request.method == "POST":
 
-        ip = request.form["ip"]
+        try:
 
-        report = ip_lookup(ip)
+            ip = request.form["ip"].strip()
 
-        return render_template(
-            "geolocation_result.html",
-            report=report
-        )
+            if not ip:
+                raise ValueError("Please enter a valid IP address.")
 
-    return render_template(
-        "geolocation.html"
-    )
+            report = geo_service(ip)
+
+            return render_template(
+                "geolocation_result.html",
+                report=report
+            )
+
+        except ValueError as e:
+
+            return render_template(
+                "error.html",
+                message=str(e)
+            )
+
+        except Exception:
+
+            return render_template(
+                "error.html",
+                message="Unable to retrieve geolocation information."
+            )
+
+    return render_template("geolocation.html")
 @app.route("/subdomain", methods=["GET", "POST"])
 def subdomain():
 
     if request.method == "POST":
 
-        domain = request.form["domain"]
+        try:
 
-        report = find_subdomains(domain)
+            domain = request.form["domain"].strip()
 
-        return render_template(
-            "subdomain_result.html",
-            report=report
-        )
+            if not domain:
+                raise ValueError("Please enter a valid domain.")
+
+            report = subdomain_service(domain)
+
+            return render_template(
+                "subdomain_result.html",
+                report=report
+            )
+
+        except ValueError as e:
+
+            return render_template(
+                "error.html",
+                message=str(e)
+            )
+
+        except Exception:
+
+            return render_template(
+                "error.html",
+                message="Unable to enumerate subdomains for the specified domain."
+            )
 
     return render_template("subdomain.html")
 
 @app.route("/whois", methods=["GET", "POST"])
-def whois_page():
+def whois_look():
 
     if request.method == "POST":
 
-        domain = request.form["domain"]
+        try:
 
-        report = whois_lookup(domain)
+            domain = request.form["domain"].strip()
 
-        return render_template(
-            "whois_result.html",
-            report=report
-        )
+            if not domain:
+                raise ValueError("Please enter a valid domain.")
 
-    return render_template(
-        "whois_index.html"
-    )
+            report = whois_service(domain)
+
+            return render_template(
+                "whois_result.html",
+                report=report
+            )
+
+        except ValueError as e:
+
+            return render_template(
+                "error.html",
+                message=str(e)
+            )
+
+        except Exception:
+
+            return render_template(
+                "error.html",
+                message="WHOIS lookup failed. Registrar information could not be retrieved."
+            )
+
+    return render_template("whois_index.html")
 
 @app.route("/dns", methods=["GET", "POST"])
-def dns_page():
+def dns_look():
 
     if request.method == "POST":
 
-        domain = request.form["domain"]
+        try:
 
-        report = dns_lookup(domain)
+            domain = request.form["domain"].strip()
 
-        return render_template(
-            "dns_result.html",
-            report=report
-        )
+            if not domain:
+                raise ValueError("Please enter a valid domain.")
 
-    return render_template(
-        "dns_index.html"
-    )
+            report = dns_service(domain)
+
+            return render_template(
+                "dns_result.html",
+                report=report
+            )
+
+        except ValueError as e:
+
+            return render_template(
+                "error.html",
+                message=str(e)
+            )
+
+        except Exception:
+
+            return render_template(
+                "error.html",
+                message="DNS lookup failed. The domain may not exist or DNS servers are unreachable."
+            )
+
+    return render_template("dns_index.html")
 @app.route("/ssl", methods=["GET", "POST"])
-def ssl_page():
+def ssl_look():
 
     if request.method == "POST":
 
-        domain = request.form["domain"]
+        try:
 
-        report = analyze_ssl(domain)
+            domain = request.form["domain"].strip()
 
-        return render_template(
-            "ssl_result.html",
-            report=report
-        )
+            if not domain:
+                raise ValueError("Please enter a valid domain.")
 
-    return render_template(
-        "ssl_index.html"
-    )
+            report = ssl_service(domain)
+
+            if isinstance(report, dict) and "error" in report:
+                return render_template(
+                    "error.html",
+                    message=report["error"]
+                )
+
+            return render_template(
+                "ssl_result.html",
+                report=report
+            )
+
+        except ValueError as e:
+
+            return render_template(
+                "error.html",
+                message=str(e)
+            )
+
+        except Exception as e:
+
+            print(f"[SSL ERROR] {e}")
+
+            return render_template(
+                "error.html",
+                message=f"SSL inspection failed: {e}"
+            )
+
+    return render_template("ssl_index.html")
 @app.route("/headers", methods=["GET", "POST"])
-def headers():
+def security_headers():
 
     if request.method == "POST":
 
-        domain = request.form["domain"]
+        try:
 
-        report = analyze_headers(domain)
+            domain = request.form["domain"].strip()
 
-        return render_template(
-            "headers_result.html",
-            report=report
-        )
+            if not domain:
+                raise ValueError("Please enter a valid domain.")
+
+            report = headers_service(domain)
+
+            if isinstance(report, dict) and "error" in report:
+                return render_template(
+                    "error.html",
+                    message=report["error"]
+                )
+
+            return render_template(
+                "headers_result.html",
+                report=report
+            )
+
+        except ValueError as e:
+
+            return render_template(
+                "error.html",
+                message=str(e)
+            )
+
+        except Exception as e:
+
+            print(f"[HEADERS ERROR] {e}")
+
+            return render_template(
+                "error.html",
+                message=f"Security Header Analysis failed: {e}"
+            )
+
+    return render_template("headers_index.html")
+@app.route("/test-error")
+def test_error():
 
     return render_template(
-        "headers_index.html"
+        "error.html",
+        message="Unable to resolve the target host."
     )
 
 if __name__ == "__main__":

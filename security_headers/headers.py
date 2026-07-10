@@ -142,3 +142,6 @@ def analyze_headers(domain):
         return {
             "error": str(e)
         }
+if __name__ == "__main__":
+    report = analyze_headers("google.com")
+    print(report)

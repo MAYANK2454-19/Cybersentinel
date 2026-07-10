@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}
+CyberSentinel | Error
+{% endblock %}
+
+{% block page_title %}
+CyberSentinel
+{% endblock %}
+
+{% block subtitle %}
+Reconnaissance Platform
+{% endblock %}
+
+{% block content %}
+
+<div class="tool-container">
+
+    <div class="tool-header">
+
+        <h1>⚠ Scan Failed</h1>
+
+        <p>
+            CyberSentinel could not complete the requested operation.
+        </p>
+
+    </div>
+
+    <div class="card error-card">
+
+        <h2>Error Details</h2>
+
+        <p class="error-message">
+
+            {{ message }}
+
+        </p>
+
+        <hr>
+
+        <h3>Possible Reasons</h3>
+
+        <ul class="error-list">
+
+            <li>Invalid hostname or IP address</li>
+
+            <li>Target is unreachable</li>
+
+            <li>DNS resolution failed</li>
+
+            <li>Connection timed out</li>
+
+            <li>Requested service is unavailable</li>
+
+        </ul>
+
+    </div>
+
+    <div class="result-buttons">
+
+        <button class="primary-btn"
+                onclick="history.back()">
+
+            Try Again
+
+        </button>
+
+        <a href="/"
+           class="primary-btn">
+
+            Dashboard
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

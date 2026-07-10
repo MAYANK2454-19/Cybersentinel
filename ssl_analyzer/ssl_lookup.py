@@ -88,3 +88,6 @@ def analyze_ssl(domain):
         return {
             "error": str(e)
         }
+if __name__ == "__main__":
+    report = analyze_ssl("google.com")
+    print(report)
