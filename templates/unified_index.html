@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}
+Unified Scanner
+{% endblock %}
+
+{% block page_title %}
+Unified Scanner
+{% endblock %}
+
+{% block subtitle %}
+Run multiple reconnaissance modules in a single scan
+{% endblock %}
+
+{% block content %}
+
+<div class="result-header">
+
+    <h1>Unified Reconnaissance Scanner</h1>
+
+    <p>
+
+        Select the reconnaissance modules you want to execute.
+        CyberSentinel will combine all selected results into one
+        comprehensive intelligence report.
+
+    </p>
+
+</div>
+
+<form action="/unified" method="POST">
+
+<div class="result-card">
+
+<h2>Target</h2>
+
+<input
+type="text"
+name="target"
+placeholder="google.com or 8.8.8.8"
+required>
+
+</div>
+
+
+<div class="result-card">
+
+<h2>Select Recon Modules</h2>
+
+<div class="module-grid">
+
+<label class="module-option">
+<input type="checkbox" name="modules" value="ping" checked>
+<span> Ping</span>
+</label>
+
+<label class="module-option">
+<input type="checkbox" name="modules" value="dns" checked>
+<span> DNS Lookup</span>
+</label>
+
+<label class="module-option">
+<input type="checkbox" name="modules" value="whois" checked>
+<span> WHOIS</span>
+</label>
+
+<label class="module-option">
+<input type="checkbox" name="modules" value="ssl" checked>
+<span> SSL Analysis</span>
+</label>
+
+<label class="module-option">
+<input type="checkbox" name="modules" value="headers" checked>
+<span> Security Headers</span>
+</label>
+
+<label class="module-option">
+<input type="checkbox" name="modules" value="ports">
+<span> Port Scan</span>
+</label>
+
+<label class="module-option">
+<input type="checkbox" name="modules" value="subdomains">
+<span> Subdomain Enumeration</span>
+</label>
+
+<label class="module-option">
+<input type="checkbox" name="modules" value="geo">
+<span> Geolocation</span>
+</label>
+
+</div>
+
+</div>
+
+<div class="result-card">
+
+<h2>Port Scan Configuration</h2>
+
+<div class="port-grid">
+
+<div>
+
+<label>Start Port</label>
+
+<input
+type="number"
+name="start_port"
+value="1">
+
+</div>
+
+<div>
+
+<label>End Port</label>
+
+<input
+type="number"
+name="end_port"
+value="1000">
+
+</div>
+
+</div>
+
+</div>
+
+<div class="result-buttons">
+
+<button
+type="submit"
+class="primary-btn">
+
+ Start Unified Scan
+
+</button>
+
+</div>
+
+</form>
+
+{% endblock %}

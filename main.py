@@ -7,6 +7,8 @@ from ssl_analyzer.ssl_lookup import analyze_ssl as ssl_service
 from security_headers.headers import analyze_headers as headers_service
 from geolocation.geolocation import ip_lookup as geo_service
 from subdomain_finder.subfinder import find_subdomains as subdomain_service
+from unified_scanner.unified import unified_scan
+from attack_surface_mapper.asm import run_attack_surface
 
 import os
 
@@ -309,6 +311,113 @@ def security_headers():
             )
 
     return render_template("headers_index.html")
+@app.route("/unified", methods=["GET", "POST"])
+def unified():
+
+    if request.method == "POST":
+
+        target = request.form["target"]
+
+        modules = request.form.getlist("modules")
+
+        start_port = request.form["start_port"]
+
+        end_port = request.form["end_port"]
+
+        report = unified_scan(
+            target,
+            modules,
+            start_port,
+            end_port
+        )
+
+        return render_template(
+            "unified_result.html",
+            report=report
+        )
+
+    return render_template("unified_index.html")
+@app.route("/attack-surface", methods=["GET", "POST"])
+def attack_surface():
+
+    if request.method == "POST":
+
+        domain = request.form.get("domain")
+
+        profile=request.form["profile"]
+        if profile=="quick":
+
+            modules=[
+
+                "ping",
+
+                "dns",
+
+                "whois",
+
+                "ssl",
+
+                "headers"
+
+            ]
+
+        elif profile=="standard":
+
+            modules=[
+
+                "ping",
+
+                "dns",
+
+                "whois",
+
+                "ssl",
+
+                "headers",
+
+                "geo",
+
+                "subdomains",
+
+                "technology",
+                   
+                "ports"
+                
+
+            ]
+
+        else:
+
+            modules=[
+
+                "ping",
+
+                "dns",
+
+                "whois",
+
+                "ssl",
+
+                "headers",
+
+                "geo",
+
+                "subdomains",
+
+                "technology",
+
+                "ports"
+
+            ]
+
+        report = run_attack_surface(domain, modules)
+
+        return render_template(
+            "attack_surface_result.html",
+            report=report
+        )
+
+    return render_template("attack_surface.html")
 @app.route("/test-error")
 def test_error():
 
