@@ -113,6 +113,60 @@ Domain Registration Intelligence
             <td>{{ report.expiration_date }}</td>
 
         </tr>
+        <tr>
+    <td>Registrant</td>
+    <td>{{ report.registrant }}</td>
+</tr>
+
+<tr>
+    <td>Organization</td>
+    <td>{{ report.organization }}</td>
+</tr>
+
+<tr>
+    <td>Email</td>
+    <td>{{ report.email }}</td>
+</tr>
+
+<tr>
+    <td>Phone</td>
+    <td>{{ report.phone }}</td>
+</tr>
+
+<tr>
+    <td>Address</td>
+    <td>{{ report.address }}</td>
+</tr>
+
+<tr>
+    <td>City</td>
+    <td>{{ report.city }}</td>
+</tr>
+
+<tr>
+    <td>State</td>
+    <td>{{ report.state }}</td>
+</tr>
+
+<tr>
+    <td>Country</td>
+    <td>{{ report.country }}</td>
+</tr>
+
+<tr>
+    <td>Postal Code</td>
+    <td>{{ report.zipcode }}</td>
+</tr>
+
+<tr>
+    <td>DNSSEC</td>
+    <td>{{ report.dnssec }}</td>
+</tr>
+
+<tr>
+    <td>Status</td>
+    <td>{{ report.status }}</td>
+</tr>
 
     </table>
 
@@ -137,24 +191,6 @@ Domain Registration Intelligence
         {% endfor %}
 
     </div>
-
-</div>
-
-
-
-<div class="result-card">
-
-    <h2>Privacy Notice</h2>
-
-    <p>
-
-        Modern WHOIS databases often redact registrant names,
-        addresses, phone numbers and email addresses to comply
-        with privacy regulations and registry policies.
-        This report displays only publicly available registration
-        metadata.
-
-    </p>
 
 </div>
 
