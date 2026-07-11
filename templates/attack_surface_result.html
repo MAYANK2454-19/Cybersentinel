@@ -1,0 +1,609 @@
+{% extends "base.html" %}
+
+{% block title %}Attack Surface Report{% endblock %}
+
+{% block page_title %}Attack Surface Mapper{% endblock %}
+
+{% block subtitle %}
+Comprehensive Security Assessment Report
+{% endblock %}
+
+{% block content %}
+
+<div class="result-header">
+
+    <h1>Attack Surface Intelligence Report</h1>
+
+    <p>
+
+        Target :
+        <strong>{{ report.target }}</strong>
+
+    </p>
+
+</div>
+
+
+
+<!-- ================= SUMMARY ================= -->
+
+<div class="summary-grid">
+
+<div class="summary-card">
+
+<h4>Risk Score</h4>
+
+<p>{{ report.risk.score }}/100</p>
+
+</div>
+
+<div class="summary-card">
+
+<h4>Severity</h4>
+
+<p>{{ report.risk.severity }}</p>
+
+</div>
+
+<div class="summary-card">
+
+<h4>Modules Executed</h4>
+
+<p>{{ report.modules_completed }}</p>
+
+</div>
+
+<div class="summary-card">
+
+<h4>Duration</h4>
+
+<p>{{ report.duration }} sec</p>
+
+</div>
+
+</div>
+
+
+
+<!-- ================= FINDINGS ================= -->
+
+<div class="result-card">
+
+<h2>Critical Findings</h2>
+
+{% if report.findings %}
+
+<ul>
+
+{% for finding in report.findings %}
+
+<li>{{ finding }}</li>
+
+{% endfor %}
+
+</ul>
+
+{% else %}
+
+<p>No significant findings.</p>
+
+{% endif %}
+
+</div>
+
+
+
+<!-- ================= RECOMMENDATIONS ================= -->
+
+<div class="result-card">
+
+<h2>Recommendations</h2>
+
+{% if report.recommendations %}
+
+<ul>
+
+{% for item in report.recommendations %}
+
+<li>{{ item }}</li>
+
+{% endfor %}
+
+</ul>
+
+{% else %}
+
+<p>No recommendations available.</p>
+
+{% endif %}
+
+</div>
+
+
+
+<!-- ================= PING ================= -->
+
+{% if report.modules.ping %}
+
+<div class="result-card">
+
+<h2>Ping Result</h2>
+
+{% if report.modules.ping.error %}
+
+<p>{{ report.modules.ping.error }}</p>
+
+{% else %}
+
+<table class="result-table">
+
+<tr>
+
+<td>Status</td>
+
+<td>{{ report.modules.ping.status }}</td>
+
+</tr>
+
+<tr>
+
+<td>Average Time</td>
+
+<td>{{ report.modules.ping.average_time }}</td>
+
+</tr>
+
+</table>
+
+{% endif %}
+
+</div>
+
+{% endif %}
+
+
+
+<!-- ================= PORT SCAN ================= -->
+
+{% if report.modules.ports %}
+
+<div class="result-card">
+
+<h2>Port Scan</h2>
+
+{% if report.modules.ports.error %}
+
+<p>{{ report.modules.ports.error }}</p>
+
+{% else %}
+
+<p>
+
+Open Ports :
+
+<strong>
+
+{{ report.modules.ports.open_ports|length }}
+
+</strong>
+
+</p>
+
+<table class="result-table">
+
+<tr>
+
+<th>Port</th>
+
+<th>Service</th>
+
+</tr>
+
+{% for port in report.modules.ports.open_ports %}
+
+<tr>
+
+<td>{{ port.port }}</td>
+
+<td>{{ port.service }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endif %}
+
+</div>
+
+{% endif %}
+
+
+
+<!-- ================= DNS ================= -->
+
+{% if report.modules.dns %}
+
+<div class="result-card">
+
+<h2>DNS Information</h2>
+
+{% if report.modules.dns.error %}
+
+<p>{{ report.modules.dns.error }}</p>
+
+{% else %}
+
+<table class="result-table">
+
+<tr>
+
+<td>A Records</td>
+
+<td>{{ report.modules.dns.A|join(", ") }}</td>
+
+</tr>
+
+<tr>
+
+<td>AAAA Records</td>
+
+<td>{{ report.modules.dns.AAAA|join(", ") }}</td>
+
+</tr>
+
+<tr>
+
+<td>MX Records</td>
+
+<td>{{ report.modules.dns.MX|join(", ") }}</td>
+
+</tr>
+
+<tr>
+
+<td>NS Records</td>
+
+<td>{{ report.modules.dns.NS|join(", ") }}</td>
+
+</tr>
+
+</table>
+
+{% endif %}
+
+</div>
+
+{% endif %}
+
+
+
+<!-- ================= WHOIS ================= -->
+
+{% if report.modules.whois %}
+
+<div class="result-card">
+
+<h2>WHOIS</h2>
+
+{% if report.modules.whois.error %}
+
+<p>{{ report.modules.whois.error }}</p>
+
+{% else %}
+
+<table class="result-table">
+
+<tr><td>Registrar</td><td>{{ report.modules.whois.registrar }}</td></tr>
+
+<tr><td>Organization</td><td>{{ report.modules.whois.organization }}</td></tr>
+
+<tr><td>Created</td><td>{{ report.modules.whois.creation_date }}</td></tr>
+
+<tr><td>Expires</td><td>{{ report.modules.whois.expiration_date }}</td></tr>
+
+<tr><td>Email</td><td>{{ report.modules.whois.email }}</td></tr>
+
+<tr><td>Phone</td><td>{{ report.modules.whois.phone }}</td></tr>
+
+<tr><td>Country</td><td>{{ report.modules.whois.country }}</td></tr>
+
+</table>
+
+{% endif %}
+
+</div>
+
+{% endif %}
+
+
+
+<!-- ================= SSL ================= -->
+
+{% if report.modules.ssl %}
+
+<div class="result-card">
+
+<h2>SSL Certificate</h2>
+
+{% if report.modules.ssl.error %}
+
+<p>{{ report.modules.ssl.error }}</p>
+
+{% else %}
+
+<table class="result-table">
+
+<tr><td>Issuer</td><td>{{ report.modules.ssl.issuer }}</td></tr>
+
+<tr><td>Subject</td><td>{{ report.modules.ssl.subject }}</td></tr>
+
+<tr><td>TLS Version</td><td>{{ report.modules.ssl.tls_version }}</td></tr>
+
+<tr><td>Valid Until</td><td>{{ report.modules.ssl.valid_until }}</td></tr>
+
+<tr><td>Days Remaining</td><td>{{ report.modules.ssl.days_remaining }}</td></tr>
+
+</table>
+
+{% endif %}
+
+</div>
+
+{% endif %}
+{% if report.modules.technology %}
+
+<div class="result-card">
+
+<h2>Technology Detection</h2>
+
+{% if report.modules.technology.error %}
+
+<p>{{ report.modules.technology.error }}</p>
+
+{% else %}
+
+<table class="result-table">
+
+<tr>
+
+<th>Technology</th>
+
+</tr>
+
+{% for tech in report.modules.technology.technologies %}
+
+<tr>
+
+<td>{{ tech }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endif %}
+
+</div>
+
+{% endif %}
+
+
+
+<!-- ================= HEADERS ================= -->
+
+{% if report.modules.headers %}
+
+<div class="result-card">
+
+<h2>Security Headers</h2>
+
+{% if report.modules.headers.error %}
+
+<p>{{ report.modules.headers.error }}</p>
+
+{% else %}
+
+<table class="result-table">
+
+<tr>
+
+<th>Header</th>
+
+<th>Status</th>
+
+</tr>
+
+{% for key,value in report.modules.headers.headers.items() %}
+
+<tr>
+
+<td>{{ key }}</td>
+
+<td>
+
+{% if value %}
+
+<span class="https-badge">Present</span>
+
+{% else %}
+
+<span class="http-badge">Missing</span>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endif %}
+
+</div>
+
+{% endif %}
+
+
+
+<!-- ================= GEO ================= -->
+
+{% if report.modules.geo %}
+
+<div class="result-card">
+
+<h2>Geolocation</h2>
+
+{% if report.modules.geo.error %}
+
+<p>{{ report.modules.geo.error }}</p>
+
+{% else %}
+
+<table class="result-table">
+
+<tr><td>Country</td><td>{{ report.modules.geo.country }}</td></tr>
+
+<tr><td>Region</td><td>{{ report.modules.geo.region }}</td></tr>
+
+<tr><td>City</td><td>{{ report.modules.geo.city }}</td></tr>
+
+<tr><td>ISP</td><td>{{ report.modules.geo.isp }}</td></tr>
+
+<tr><td>Organization</td><td>{{ report.modules.geo.org }}</td></tr>
+
+<tr><td>Coordinates</td><td>{{ report.modules.geo.latitude }}, {{ report.modules.geo.longitude }}</td></tr>
+
+</table>
+
+{% endif %}
+
+</div>
+
+{% endif %}
+
+
+
+<!-- ================= SUBDOMAINS ================= -->
+
+{% if report.modules.subdomains %}
+
+<div class="result-card">
+
+<h2>Subdomains</h2>
+
+{% if report.modules.subdomains.error %}
+
+<p>{{ report.modules.subdomains.error }}</p>
+
+{% else %}
+
+<p>
+
+Found :
+
+<strong>
+
+{{ report.modules.subdomains.total_found }}
+
+</strong>
+
+</p>
+
+<table class="result-table">
+
+<tr>
+
+<th>#</th>
+
+<th>Subdomain</th>
+
+</tr>
+
+{% for sub in report.modules.subdomains.subdomains %}
+
+<tr>
+
+<td>{{ loop.index }}</td>
+
+<td>{{ sub }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endif %}
+
+</div>
+
+{% endif %}
+
+
+
+<!-- ================= BUTTONS ================= -->
+
+<div class="result-buttons">
+
+<a href="/attack-surface" class="primary-btn">
+
+Run Another Assessment
+
+</a>
+
+<a href="/" class="primary-btn">
+
+Dashboard
+
+</a>
+
+<button class="primary-btn" onclick="downloadReport()">
+
+Download JSON
+
+</button>
+
+</div>
+
+
+
+<script type="application/json" id="report-data">
+{{ report | tojson }}
+</script>
+
+<script>
+
+function downloadReport(){
+
+const raw=document.getElementById("report-data").textContent;
+
+const blob=new Blob(
+
+[raw],
+
+{type:"application/json"}
+
+);
+
+const url=URL.createObjectURL(blob);
+
+const a=document.createElement("a");
+
+a.href=url;
+
+a.download="attack_surface_report.json";
+
+a.click();
+
+URL.revokeObjectURL(url);
+
+}
+
+</script>
+
+{% endblock %}

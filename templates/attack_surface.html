@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Attack Surface Mapper{% endblock %}
+
+{% block page_title %}Attack Surface Mapper{% endblock %}
+
+{% block subtitle %}
+Discover the complete attack surface of a target.
+{% endblock %}
+
+{% block content %}
+
+<div class="tool-container">
+
+<div class="tool-header">
+
+<h1>Attack Surface Mapper</h1>
+
+<p>
+
+Select which reconnaissance modules you want to execute.
+
+</p>
+
+</div>
+
+<form method="POST">
+
+<div class="input-group">
+
+<label>Target Domain</label>
+
+<input
+type="text"
+name="domain"
+placeholder="example.com"
+required>
+
+</div>
+
+<h3>Select Modules</h3>
+
+<div class="input-group">
+
+<label>Assessment Profile</label>
+
+<div class="profile-grid">
+
+<label class="profile-card">
+
+<input
+type="radio"
+name="profile"
+value="quick"
+checked>
+
+<h3>Quick</h3>
+
+<p>
+
+Basic reconnaissance
+
+<br>
+
+5 Modules
+
+</p>
+
+</label>
+
+
+<label class="profile-card">
+
+<input
+type="radio"
+name="profile"
+value="standard">
+
+<h3>Standard</h3>
+
+<p>
+
+Infrastructure Assessment
+
+<br>
+
+8 Modules
+
+</p>
+
+</label>
+
+
+<label class="profile-card">
+
+<input
+type="radio"
+name="profile"
+value="deep">
+
+<h3>Deep</h3>
+
+<p>
+
+Complete Attack Surface Mapping
+
+<br>
+
+15+ Checks
+
+</p>
+
+</label>
+
+</div>
+
+</div>
+
+<br>
+
+<button
+class="primary-btn"
+type="submit">
+
+Start Assessment
+
+</button>
+
+</form>
+
+</div>
+
+{% endblock %}

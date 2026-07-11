@@ -2019,6 +2019,154 @@ footer{
     color:var(--text-light);
 
 }
+/* ===========================
+   Unified Scanner
+=========================== */
+
+.module-grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(220px,1fr));
+
+gap:18px;
+
+margin-top:25px;
+
+}
+
+.module-option{
+
+display:flex;
+
+align-items:center;
+
+gap:14px;
+
+padding:18px;
+
+background:var(--surface);
+
+border:1px solid var(--border);
+
+border-radius:14px;
+
+cursor:pointer;
+
+transition:.25s;
+
+font-weight:600;
+
+}
+
+.module-option:hover{
+
+border-color:var(--primary);
+
+transform:translateY(-3px);
+
+box-shadow:var(--shadow);
+
+}
+
+.module-option input{
+
+width:20px;
+
+height:20px;
+
+cursor:pointer;
+
+}
+
+.port-grid{
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+gap:20px;
+
+margin-top:20px;
+
+}
+
+.port-grid input{
+
+width:100%;
+
+}
+.featured-tool{
+    background:linear-gradient(135deg,#2563eb,#06b6d4);
+    color:#fff;
+    font-weight:700;
+    padding:6px 12px;
+    border-radius:999px;
+}
+.profile-grid{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+gap:20px;
+
+margin-top:20px;
+
+}
+
+.profile-card{
+
+display:block;
+
+padding:25px;
+
+border:1px solid var(--border);
+
+border-radius:14px;
+
+background:var(--surface);
+
+cursor:pointer;
+
+transition:.3s;
+
+}
+
+.profile-card:hover{
+
+border-color:var(--primary);
+
+transform:translateY(-4px);
+
+}
+
+.profile-card input{
+
+margin-bottom:15px;
+
+transform:scale(1.2);
+
+}
+
+.profile-card h3{
+
+margin-bottom:8px;
+
+color:var(--text);
+
+}
+
+.profile-card p{
+
+color:var(--text-light);
+
+font-size:.95rem;
+
+line-height:1.5;
+
+}
 /* =====================================
    RESPONSIVE DESIGN
 ===================================== */
