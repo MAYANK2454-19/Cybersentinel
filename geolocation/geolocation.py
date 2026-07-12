@@ -1,31 +1,93 @@
+import re
 import requests
 
 
 def ip_lookup(ip: str) -> dict:
 
-    url = f"http://ip-api.com/json/{ip}"
+    ip = ip.strip()
 
-    response = requests.get(url, timeout=10)
+    # Basic IPv4 validation
+    pattern = r"^(?:\d{1,3}\.){3}\d{1,3}$"
 
-    data = response.json()
+    if not re.match(pattern, ip):
+        raise Exception(
+            "Please enter a valid IPv4 address."
+        )
 
-    if data["status"] != "success":
+    # Check each octet
+    octets = ip.split(".")
+
+    for octet in octets:
+
+        if int(octet) > 255:
+
+            raise Exception(
+                "Please enter a valid IPv4 address."
+            )
+
+    try:
+
+        url = f"http://ip-api.com/json/{ip}"
+
+        response = requests.get(
+            url,
+            timeout=10
+        )
+
+        response.raise_for_status()
+
+        data = response.json()
+
+        if data.get("status") != "success":
+
+            raise Exception(
+                data.get("message", "Unable to locate the supplied IP address.")
+            )
 
         return {
-            "error": "Invalid IP Address"
+
+            "ip": data.get("query", "N/A"),
+
+            "country": data.get("country", "N/A"),
+
+            "region": data.get("regionName", "N/A"),
+
+            "city": data.get("city", "N/A"),
+
+            "zip": data.get("zip", "N/A"),
+
+            "isp": data.get("isp", "N/A"),
+
+            "org": data.get("org", "N/A"),
+
+            "timezone": data.get("timezone", "N/A"),
+
+            "latitude": data.get("lat", "N/A"),
+
+            "longitude": data.get("lon", "N/A")
+
         }
 
-    return {
+    except requests.exceptions.Timeout:
 
-        "ip": data["query"],
-        "country": data["country"],
-        "region": data["regionName"],
-        "city": data["city"],
-        "zip": data["zip"],
-        "isp": data["isp"],
-        "org": data["org"],
-        "timezone": data["timezone"],
-        "latitude": data["lat"],
-        "longitude": data["lon"]
+        raise Exception(
+            "The geolocation service timed out."
+        )
 
-    }
+    except requests.exceptions.ConnectionError:
+
+        raise Exception(
+            "Unable to connect to the geolocation service."
+        )
+
+    except requests.exceptions.HTTPError:
+
+        raise Exception(
+            "The geolocation service returned an unexpected response."
+        )
+
+    except Exception as e:
+
+        raise Exception(
+            f"Geolocation lookup failed: {e}"
+        )

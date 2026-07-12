@@ -3,36 +3,56 @@ import dns.resolver
 
 def get_records(domain, record_type):
 
-    try:
+    answers = dns.resolver.resolve(
+        domain,
+        record_type
+    )
 
-        answers = dns.resolver.resolve(
-            domain,
-            record_type
-        )
-
-        return [str(answer) for answer in answers]
-
-    except:
-
-        return []
+    return [str(answer) for answer in answers]
 
 
 def dns_lookup(domain):
 
-    report = {
+    try:
 
-        "domain": domain,
+        report = {
 
-        "A": get_records(domain, "A"),
+            "domain": domain,
 
-        "AAAA": get_records(domain, "AAAA"),
+            "A": get_records(domain, "A"),
 
-        "MX": get_records(domain, "MX"),
+            "AAAA": get_records(domain, "AAAA"),
 
-        "NS": get_records(domain, "NS"),
+            "MX": get_records(domain, "MX"),
 
-        "TXT": get_records(domain, "TXT")
+            "NS": get_records(domain, "NS"),
 
-    }
+            "TXT": get_records(domain, "TXT")
 
-    return report
+        }
+
+        return report
+
+    except dns.resolver.NXDOMAIN:
+
+        raise Exception(
+            "The domain does not exist."
+        )
+
+    except dns.resolver.NoAnswer:
+
+        raise Exception(
+            "DNS server returned no records."
+        )
+
+    except dns.resolver.NoNameservers:
+
+        raise Exception(
+            "No DNS nameservers are available."
+        )
+
+    except Exception as e:
+
+        raise Exception(
+            f"DNS lookup failed : {e}"
+        )

@@ -1,15 +1,37 @@
 import ssl
 import socket
-from datetime import datetime
+import re
+
+from datetime import datetime, UTC
+
+
+def validate_domain(domain):
+
+    domain = domain.strip().lower()
+
+    pattern = r"^(?!-)(?:[a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,}$"
+
+    if not re.match(pattern, domain):
+
+        raise Exception(
+            "Please enter a valid domain name."
+        )
+
+    return domain
 
 
 def analyze_ssl(domain):
+
+    domain = validate_domain(domain)
 
     try:
 
         context = ssl.create_default_context()
 
-        with socket.create_connection((domain, 443), timeout=5) as sock:
+        with socket.create_connection(
+            (domain, 443),
+            timeout=5
+        ) as sock:
 
             with context.wrap_socket(
                 sock,
@@ -26,32 +48,31 @@ def analyze_ssl(domain):
                     x[0] for x in cert["subject"]
                 )
 
-                valid_from = cert["notBefore"]
-                valid_until = cert["notAfter"]
-
                 start_date = datetime.strptime(
-                    valid_from,
+                    cert["notBefore"],
                     "%b %d %H:%M:%S %Y %Z"
                 )
 
                 end_date = datetime.strptime(
-                    valid_until,
+                    cert["notAfter"],
                     "%b %d %H:%M:%S %Y %Z"
                 )
 
                 days_remaining = (
-                    end_date - datetime.utcnow()
+                    end_date.replace(tzinfo=UTC)
+                    - datetime.now(UTC)
                 ).days
 
                 san = []
 
-                if "subjectAltName" in cert:
+                for entry in cert.get(
+                    "subjectAltName",
+                    []
+                ):
 
-                    for entry in cert["subjectAltName"]:
+                    san.append(entry[1])
 
-                        san.append(entry[1])
-
-                report = {
+                return {
 
                     "domain": domain,
 
@@ -81,13 +102,39 @@ def analyze_ssl(domain):
 
                 }
 
-                return report
+    except socket.gaierror:
+
+        raise Exception(
+            "Unable to resolve the supplied domain."
+        )
+
+    except TimeoutError:
+
+        raise Exception(
+            "Connection timed out while retrieving the SSL certificate."
+        )
+
+    except ssl.SSLError:
+
+        raise Exception(
+            "The target does not provide a valid SSL/TLS certificate."
+        )
+
+    except ConnectionRefusedError:
+
+        raise Exception(
+            "The HTTPS service is unavailable on the target."
+        )
 
     except Exception as e:
 
-        return {
-            "error": str(e)
-        }
+        raise Exception(
+            f"SSL inspection failed: {e}"
+        )
+
+
 if __name__ == "__main__":
-    report = analyze_ssl("google.com")
-    print(report)
+
+    print(
+        analyze_ssl("google.com")
+    )

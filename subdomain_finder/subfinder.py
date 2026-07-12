@@ -1,11 +1,31 @@
-import requests
+import re
 import socket
+import requests
 from concurrent.futures import ThreadPoolExecutor
 
 
-# -----------------------------
+# ---------------------------------------
+# Domain Validation
+# ---------------------------------------
+
+def validate_domain(domain):
+
+    domain = domain.strip().lower()
+
+    pattern = r"^(?!-)(?:[a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,}$"
+
+    if not re.match(pattern, domain):
+
+        raise Exception(
+            "Please enter a valid domain name."
+        )
+
+    return domain
+
+
+# ---------------------------------------
 # CRT.SH
-# -----------------------------
+# ---------------------------------------
 
 def get_crtsh(domain):
 
@@ -18,33 +38,40 @@ def get_crtsh(domain):
         response = requests.get(
             url,
             timeout=30,
-            headers={"User-Agent": "CyberSentinel"}
+            headers={
+                "User-Agent": "CyberSentinel"
+            }
         )
 
-        if response.status_code == 200:
+        response.raise_for_status()
 
-            data = response.json()
+        data = response.json()
 
-            for item in data:
+        for item in data:
 
-                names = item.get("name_value", "").split("\n")
+            names = item.get(
+                "name_value",
+                ""
+            ).split("\n")
 
-                for name in names:
+            for name in names:
 
-                    name = name.strip().lower()
+                name = name.strip().lower()
 
-                    if domain in name:
-                        subdomains.add(name)
+                if domain in name:
 
-    except Exception:
+                    subdomains.add(name)
+
+    except:
+
         pass
 
     return subdomains
 
 
-# -----------------------------
-# HACKERTARGET
-# -----------------------------
+# ---------------------------------------
+# HackerTarget
+# ---------------------------------------
 
 def get_hackertarget(domain):
 
@@ -53,33 +80,35 @@ def get_hackertarget(domain):
     try:
 
         url = (
-            f"https://api.hackertarget.com/"
+            "https://api.hackertarget.com/"
             f"hostsearch/?q={domain}"
         )
 
-        response = requests.get(url, timeout=20)
+        response = requests.get(
+            url,
+            timeout=20
+        )
 
-        if response.status_code == 200:
+        response.raise_for_status()
 
-            lines = response.text.splitlines()
+        for line in response.text.splitlines():
 
-            for line in lines:
+            if "," in line:
 
-                if "," in line:
+                subdomains.add(
+                    line.split(",")[0].strip()
+                )
 
-                    subdomain = line.split(",")[0].strip()
+    except:
 
-                    subdomains.add(subdomain)
-
-    except Exception:
         pass
 
     return subdomains
 
 
-# -----------------------------
-# ALIENVAULT OTX
-# -----------------------------
+# ---------------------------------------
+# AlienVault
+# ---------------------------------------
 
 def get_otx(domain):
 
@@ -88,33 +117,41 @@ def get_otx(domain):
     try:
 
         url = (
-            f"https://otx.alienvault.com/"
-            f"api/v1/indicators/domain/"
+            "https://otx.alienvault.com/"
+            "api/v1/indicators/domain/"
             f"{domain}/passive_dns"
         )
 
-        response = requests.get(url, timeout=30)
+        response = requests.get(
+            url,
+            timeout=30
+        )
 
-        if response.status_code == 200:
+        response.raise_for_status()
 
-            data = response.json()
+        data = response.json()
 
-            for item in data.get("passive_dns", []):
+        for item in data.get(
+            "passive_dns",
+            []
+        ):
 
-                hostname = item.get("hostname")
+            hostname = item.get("hostname")
 
-                if hostname:
-                    subdomains.add(hostname)
+            if hostname:
 
-    except Exception:
+                subdomains.add(hostname)
+
+    except:
+
         pass
 
     return subdomains
 
 
-# -----------------------------
-# DNS VALIDATION
-# -----------------------------
+# ---------------------------------------
+# DNS Validation
+# ---------------------------------------
 
 def is_live(subdomain):
 
@@ -131,62 +168,77 @@ def is_live(subdomain):
 
 def validate_subdomains(subdomains):
 
-    live_subdomains = []
+    live = []
 
     with ThreadPoolExecutor(max_workers=50) as executor:
 
-        results = executor.map(
+        for result in executor.map(
             is_live,
             subdomains
-        )
-
-        for result in results:
+        ):
 
             if result:
-                live_subdomains.append(result)
 
-    return live_subdomains
+                live.append(result)
+
+    return live
 
 
-# -----------------------------
-# MAIN FUNCTION
-# -----------------------------
+# ---------------------------------------
+# Main Function
+# ---------------------------------------
 
 def find_subdomains(domain):
 
-    all_subdomains = set()
+    domain = validate_domain(domain)
 
-    
-    all_subdomains.update(get_crtsh(domain))
+    try:
 
-    
-    all_subdomains.update(get_hackertarget(domain))
+        all_subdomains = set()
 
-    
-    all_subdomains.update(get_otx(domain))
+        all_subdomains.update(
+            get_crtsh(domain)
+        )
 
-   
-    live_subdomains = validate_subdomains(
-        all_subdomains
-    )
+        all_subdomains.update(
+            get_hackertarget(domain)
+        )
 
-    return {
+        all_subdomains.update(
+            get_otx(domain)
+        )
 
-        "domain": domain,
+        if len(all_subdomains) == 0:
 
-        "total_found":
-        len(all_subdomains),
+            raise Exception(
+                "No subdomains were discovered for this domain."
+            )
 
-        "live_count":
-        len(live_subdomains),
+        live = validate_subdomains(
+            all_subdomains
+        )
 
-        "dead_count":
-        len(all_subdomains)
-        - len(live_subdomains),
+        return {
 
-        "subdomains":
-        sorted(all_subdomains),
+            "domain": domain,
 
-        "live_subdomains":
-        sorted(live_subdomains)
-    }
+            "total_found": len(all_subdomains),
+
+            "live_count": len(live),
+
+            "dead_count":
+                len(all_subdomains) - len(live),
+
+            "subdomains":
+                sorted(all_subdomains),
+
+            "live_subdomains":
+                sorted(live)
+
+        }
+
+    except Exception as e:
+
+        raise Exception(
+            f"Subdomain enumeration failed: {e}"
+        )
