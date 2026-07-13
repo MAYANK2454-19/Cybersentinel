@@ -1,133 +1,57 @@
 {% extends "base.html" %}
 
 {% block title %}Attack Surface Mapper{% endblock %}
-
 {% block page_title %}Attack Surface Mapper{% endblock %}
-
-{% block subtitle %}
-Discover the complete attack surface of a target.
-{% endblock %}
+{% block subtitle %}Discover the complete attack surface of a target.{% endblock %}
 
 {% block content %}
-
 <div class="tool-container">
-
 <div class="tool-header">
-
 <h1>Attack Surface Mapper</h1>
-
-<p>
-
-Select which reconnaissance modules you want to execute.
-
-</p>
-
+<p>Choose an assessment profile to map and analyze the exposed attack surface of a target.</p>
 </div>
-
 <form method="POST">
-
 <div class="input-group">
-
 <label>Target Domain</label>
-
-<input
-type="text"
-name="domain"
-placeholder="example.com"
-required>
-
+<input type="text" name="domain" placeholder="example.com" required>
 </div>
 
-<h3>Select Modules</h3>
-
 <div class="input-group">
-
 <label>Assessment Profile</label>
-
 <div class="profile-grid">
 
 <label class="profile-card">
-
-<input
-type="radio"
-name="profile"
-value="quick"
-checked>
-
-<h3>Quick</h3>
-
-<p>
-
-Basic reconnaissance
-
-<br>
-
-5 Modules
-
-</p>
-
+<input type="radio" name="profile" value="quick" checked>
+<h3>Quick Assessment</h3>
+<p>✓ Ping Reachability<br>✓ DNS Intelligence<br>✓ WHOIS Information<br>✓ SSL Certificate<br>✓ Security Headers</p>
 </label>
 
-
 <label class="profile-card">
-
-<input
-type="radio"
-name="profile"
-value="standard">
-
-<h3>Standard</h3>
-
-<p>
-
-Infrastructure Assessment
-
-<br>
-
-8 Modules
-
-</p>
-
+<input type="radio" name="profile" value="standard">
+<h3>Standard Assessment</h3>
+<p>✓ Everything in Quick<br>✓ Port Scan<br>✓ Geolocation<br>✓ Subdomain Discovery</p>
 </label>
 
-
 <label class="profile-card">
-
-<input
-type="radio"
-name="profile"
-value="deep">
-
-<h3>Deep</h3>
-
-<p>
-
-Complete Attack Surface Mapping
-
-<br>
-
-15+ Checks
-
-</p>
-
+<input type="radio" name="profile" value="deep">
+<h3>Deep Assessment</h3>
+<p>✓ Everything in Standard<br>✓ Technology Detection<br>✓ Risk Assessment<br>✓ Security Recommendations<br>✓ Complete Attack Surface Analysis</p>
 </label>
 
 </div>
-
 </div>
 
-<br>
+<div class="result-card">
+<h2>Assessment Overview</h2>
+<table class="result-table">
+<tr><th>Profile</th><th>Purpose</th><th>Estimated Time</th></tr>
+<tr><td>Quick</td><td>Fast reconnaissance and basic security posture.</td><td>10–20 sec</td></tr>
+<tr><td>Standard</td><td>Infrastructure discovery and exposure assessment.</td><td>20–45 sec</td></tr>
+<tr><td>Deep</td><td>Complete attack surface mapping with risk analysis.</td><td>45–90 sec</td></tr>
+</table>
+</div>
 
-<button
-class="primary-btn"
-type="submit">
-
-Start Assessment
-
-</button>
-
+<button class="primary-btn" type="submit">Start Assessment</button>
 </form>
-
 </div>
-
 {% endblock %}

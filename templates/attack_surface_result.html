@@ -12,16 +12,110 @@ Comprehensive Security Assessment Report
 
 <div class="result-header">
 
-    <h1>Attack Surface Intelligence Report</h1>
+<h1>Attack Surface Assessment</h1>
 
-    <p>
+<p>
 
-        Target :
-        <strong>{{ report.target }}</strong>
+Target
 
-    </p>
+<strong>{{ report.target }}</strong>
+
+</p>
 
 </div>
+
+
+<div class="summary-grid">
+
+<div class="summary-card">
+
+<h4>Attack Surface Score</h4>
+
+<h2>
+
+{{ report.score if report.score else "N/A" }}/100
+
+</h2>
+
+</div>
+
+
+<div class="summary-card">
+
+<h4>Risk Level</h4>
+
+<h2>
+
+{{ report.risk if report.risk else "Unknown" }}
+
+</h2>
+
+</div>
+
+
+<div class="summary-card">
+
+<h4>Modules Executed</h4>
+
+<p>
+
+{{ report.summary.selected }}
+
+</p>
+
+</div>
+
+
+<div class="summary-card">
+
+<h4>Successful</h4>
+
+<p>
+
+{{ report.summary.successful }}
+
+</p>
+
+</div>
+
+
+<div class="summary-card">
+
+<h4>Failed</h4>
+
+<p>
+
+{{ report.summary.failed }}
+
+</p>
+
+</div>
+<div class="result-card">
+
+<h2>Executive Summary</h2>
+
+<p>
+
+This assessment provides an overview of the publicly exposed attack surface associated with
+
+<strong>{{ report.target }}</strong>.
+
+The scan combines infrastructure discovery, SSL analysis, DNS intelligence,
+
+WHOIS information, security header analysis,
+
+subdomain enumeration,
+
+geolocation,
+
+and network exposure into a unified assessment.
+
+</p>
+
+</div>
+</div>
+
+
 
 
 
@@ -60,6 +154,135 @@ Comprehensive Security Assessment Report
 <p>{{ report.duration }} sec</p>
 
 </div>
+
+</div>
+<div class="result-card">
+
+<h2>Assessment Status</h2>
+
+<table class="result-table">
+
+<tr>
+
+<th>Category</th>
+
+<th>Status</th>
+
+</tr>
+
+<tr>
+
+<td>DNS Intelligence</td>
+
+<td>
+
+{% if report.modules.dns and not report.modules.dns.error %}
+
+<span class="https-badge">
+
+Completed
+
+</span>
+
+{% else %}
+
+<span class="http-badge">
+
+Failed
+
+</span>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>WHOIS</td>
+
+<td>
+
+{% if report.modules.whois and not report.modules.whois.error %}
+
+<span class="https-badge">
+
+Completed
+
+</span>
+
+{% else %}
+
+<span class="http-badge">
+
+Failed
+
+</span>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>SSL Analysis</td>
+
+<td>
+
+{% if report.modules.ssl and not report.modules.ssl.error %}
+
+<span class="https-badge">
+
+Completed
+
+</span>
+
+{% else %}
+
+<span class="http-badge">
+
+Failed
+
+</span>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>Security Headers</td>
+
+<td>
+
+{% if report.modules.headers and not report.modules.headers.error %}
+
+<span class="https-badge">
+
+Completed
+
+</span>
+
+{% else %}
+
+<span class="http-badge">
+
+Failed
+
+</span>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+</table>
 
 </div>
 
