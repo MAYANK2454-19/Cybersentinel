@@ -16,45 +16,269 @@ def unified_scan(
 ):
 
     report = {
+
         "target": target,
-        "modules": {}
+
+        "modules": {},
+
+        "summary": {
+
+            "selected": len(modules),
+
+            "successful": 0,
+
+            "failed": 0
+
+        }
+
     }
 
+    # ---------------- PING ----------------
+
     if "ping" in modules:
-        report["modules"]["ping"] = ping_host(target)
+
+        try:
+
+            result = ping_host(target)
+
+            report["modules"]["ping"] = result
+
+            if "error" in result:
+
+                report["summary"]["failed"] += 1
+
+            else:
+
+                report["summary"]["successful"] += 1
+
+        except Exception as e:
+
+            report["modules"]["ping"] = {
+
+                "error": str(e)
+
+            }
+
+            report["summary"]["failed"] += 1
+
+    # ---------------- DNS ----------------
 
     if "dns" in modules:
-        report["modules"]["dns"] = dns_lookup(target)
+
+        try:
+
+            result = dns_lookup(target)
+
+            report["modules"]["dns"] = result
+
+            if "error" in result:
+
+                report["summary"]["failed"] += 1
+
+            else:
+
+                report["summary"]["successful"] += 1
+
+        except Exception as e:
+
+            report["modules"]["dns"] = {
+
+                "error": str(e)
+
+            }
+
+            report["summary"]["failed"] += 1
+
+    # ---------------- WHOIS ----------------
 
     if "whois" in modules:
-        report["modules"]["whois"] = whois_lookup(target)
+
+        try:
+
+            result = whois_lookup(target)
+
+            report["modules"]["whois"] = result
+
+            if "error" in result:
+
+                report["summary"]["failed"] += 1
+
+            else:
+
+                report["summary"]["successful"] += 1
+
+        except Exception as e:
+
+            report["modules"]["whois"] = {
+
+                "error": str(e)
+
+            }
+
+            report["summary"]["failed"] += 1
+
+    # ---------------- SSL ----------------
 
     if "ssl" in modules:
-        report["modules"]["ssl"] = analyze_ssl(target)
+
+        try:
+
+            result = analyze_ssl(target)
+
+            report["modules"]["ssl"] = result
+
+            if "error" in result:
+
+                report["summary"]["failed"] += 1
+
+            else:
+
+                report["summary"]["successful"] += 1
+
+        except Exception as e:
+
+            report["modules"]["ssl"] = {
+
+                "error": str(e)
+
+            }
+
+            report["summary"]["failed"] += 1
+
+    # ---------------- SECURITY HEADERS ----------------
 
     if "headers" in modules:
-        report["modules"]["headers"] = analyze_headers(target)
+
+        try:
+
+            result = analyze_headers(target)
+
+            report["modules"]["headers"] = result
+
+            if "error" in result:
+
+                report["summary"]["failed"] += 1
+
+            else:
+
+                report["summary"]["successful"] += 1
+
+        except Exception as e:
+
+            report["modules"]["headers"] = {
+
+                "error": str(e)
+
+            }
+
+            report["summary"]["failed"] += 1
+
+    # ---------------- SUBDOMAINS ----------------
 
     if "subdomains" in modules:
-        report["modules"]["subdomains"] = find_subdomains(target)
+
+        try:
+
+            result = find_subdomains(target)
+
+            report["modules"]["subdomains"] = result
+
+            if "error" in result:
+
+                report["summary"]["failed"] += 1
+
+            else:
+
+                report["summary"]["successful"] += 1
+
+        except Exception as e:
+
+            report["modules"]["subdomains"] = {
+
+                "error": str(e)
+
+            }
+
+            report["summary"]["failed"] += 1
+
+    # ---------------- PORT SCANNER ----------------
 
     if "ports" in modules:
-        report["modules"]["ports"] = run_scan(
-            target,
-            int(start_port),
-            int(end_port)
-        )
+
+        try:
+
+            result = run_scan(
+
+                target,
+
+                int(start_port),
+
+                int(end_port)
+
+            )
+
+            report["modules"]["ports"] = result
+
+            if "error" in result:
+
+                report["summary"]["failed"] += 1
+
+            else:
+
+                report["summary"]["successful"] += 1
+
+        except Exception as e:
+
+            report["modules"]["ports"] = {
+
+                "error": str(e)
+
+            }
+
+            report["summary"]["failed"] += 1
+
+    # ---------------- GEOLOCATION ----------------
 
     if "geo" in modules:
 
         try:
 
-            ip = report["modules"]["ports"]["ip"]
+            if (
 
-        except:
+                "ports" in report["modules"]
 
-            ip = target
+                and
 
-        report["modules"]["geo"] = ip_lookup(ip)
+                "error" not in report["modules"]["ports"]
+
+            ):
+
+                ip = report["modules"]["ports"]["ip"]
+
+            else:
+
+                ip = target
+
+            result = ip_lookup(ip)
+
+            report["modules"]["geo"] = result
+
+            if "error" in result:
+
+                report["summary"]["failed"] += 1
+
+            else:
+
+                report["summary"]["successful"] += 1
+
+        except Exception as e:
+
+            report["modules"]["geo"] = {
+
+                "error": str(e)
+
+            }
+
+            report["summary"]["failed"] += 1
 
     return report

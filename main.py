@@ -316,25 +316,45 @@ def unified():
 
     if request.method == "POST":
 
-        target = request.form["target"]
+        try:
 
-        modules = request.form.getlist("modules")
+            target = request.form["target"].strip()
 
-        start_port = request.form["start_port"]
+            modules = request.form.getlist("modules")
 
-        end_port = request.form["end_port"]
+            start_port = request.form["start_port"]
 
-        report = unified_scan(
-            target,
-            modules,
-            start_port,
-            end_port
-        )
+            end_port = request.form["end_port"]
 
-        return render_template(
-            "unified_result.html",
-            report=report
-        )
+            report = unified_scan(
+
+                target,
+
+                modules,
+
+                start_port,
+
+                end_port
+
+            )
+
+            return render_template(
+
+                "unified_result.html",
+
+                report=report
+
+            )
+
+        except Exception as e:
+
+            return render_template(
+
+                "error.html",
+
+                message=str(e)
+
+            )
 
     return render_template("unified_index.html")
 @app.route("/attack-surface", methods=["GET", "POST"])

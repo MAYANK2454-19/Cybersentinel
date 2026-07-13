@@ -46,6 +46,21 @@ required>
 <div class="result-card">
 
 <h2>Select Recon Modules</h2>
+<div class="module-controls">
+
+    <button type="button" id="selectAll">
+        ✓ Select All
+    </button>
+
+    <button type="button" id="clearAll">
+        ✕ Clear All
+    </button>
+
+    <span id="selectedCount">
+        0 Modules Selected
+    </span>
+
+</div>
 
 <div class="module-grid">
 
@@ -136,6 +151,55 @@ class="primary-btn">
 </button>
 
 </div>
+<script>
+    const boxes = document.querySelectorAll(
+    'input[name="modules"]'
+);
+
+const count = document.getElementById(
+    "selectedCount"
+);
+
+function updateCount(){
+
+    const total = document.querySelectorAll(
+        'input[name="modules"]:checked'
+    ).length;
+
+    count.textContent =
+        `${total} Modules Selected`;
+
+}
+
+document.getElementById("selectAll")
+.addEventListener("click",()=>{
+
+    boxes.forEach(box=>box.checked=true);
+
+    updateCount();
+
+});
+
+document.getElementById("clearAll")
+.addEventListener("click",()=>{
+
+    boxes.forEach(box=>box.checked=false);
+
+    updateCount();
+
+});
+
+boxes.forEach(box=>{
+
+    box.addEventListener(
+        "change",
+        updateCount
+    );
+
+});
+
+updateCount();
+</script>
 
 </form>
 

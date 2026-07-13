@@ -43,14 +43,25 @@
 
 <div class="summary-card">
 
-<h4>Modules Executed</h4>
+<h4>Modules Selected</h4>
 
 <p>
 
-{{ report.modules|length }}
+{{ report.summary.selected if report.summary is defined else report.modules|length }}
 
 </p>
 
+</div>
+
+
+<div class="summary-card">
+<h4>Successful</h4>
+<p>{{ report.summary.successful if report.summary is defined else 'N/A' }}</p>
+</div>
+
+<div class="summary-card">
+<h4>Failed</h4>
+<p>{{ report.summary.failed if report.summary is defined else 'N/A' }}</p>
 </div>
 
 {% if report.modules.geo %}
@@ -122,6 +133,23 @@
 <!-- ====================================================== -->
 <!-- CONNECTIVITY -->
 <!-- ====================================================== -->
+{% if report.modules.ping %}
+
+<div class="result-card">
+
+<h2>Ping Analysis</h2>
+
+{% if report.modules.ping.error %}
+
+<div class="error-box">
+
+<h3>Module Failed</h3>
+
+<p>{{ report.modules.ping.error }}</p>
+
+</div>
+
+{% else %}
 
 {% if report.modules.ping %}
 
@@ -240,10 +268,33 @@
 </div>
 
 {% endif %}
+{% endif %}
+
+</div>
+
+{% endif %}
 
 <!-- ====================================================== -->
 <!-- PORT SCANNER -->
 <!-- ====================================================== -->
+{% if report.modules.ports %}
+
+<div class="result-card">
+
+<h2>Port Scan</h2>
+
+{% if report.modules.ports.error %}
+
+<div class="error-box">
+
+<h3>Module Failed</h3>
+
+<p>{{ report.modules.ports.error }}</p>
+
+</div>
+
+{% else %}
+
 
 {% if report.modules.ports %}
 
@@ -368,9 +419,31 @@ View HTTP Headers
 </div>
 
 {% endif %}
+{% endif %}
+
+</div>
+
+{% endif %}
 <!-- ====================================================== -->
 <!-- DNS INTELLIGENCE -->
 <!-- ====================================================== -->
+{% if report.modules.dns %}
+
+<div class="result-card">
+
+<h2>DNS Intelligence</h2>
+
+{% if report.modules.dns.error %}
+
+<div class="error-box">
+
+<h3>Module Failed</h3>
+
+<p>{{ report.modules.dns.error }}</p>
+
+</div>
+
+{% else %}
 
 {% if report.modules.dns %}
 
@@ -479,12 +552,33 @@ View TXT Records
 </div>
 
 {% endif %}
+{% endif %}
 
+</div>
+
+{% endif %}
 
 
 <!-- ====================================================== -->
 <!-- WHOIS -->
 <!-- ====================================================== -->
+{% if report.modules.whois %}
+
+<div class="result-card">
+
+<h2>WHOIS Information</h2>
+
+{% if report.modules.whois.error %}
+
+<div class="error-box">
+
+<h3>Module Failed</h3>
+
+<p>{{ report.modules.whois.error }}</p>
+
+</div>
+
+{% else %}
 
 {% if report.modules.whois %}
 
@@ -612,12 +706,34 @@ View Name Servers
 </div>
 
 {% endif %}
+{% endif %}
+
+</div>
+
+{% endif %}
 
 
 
 <!-- ====================================================== -->
 <!-- SSL CERTIFICATE -->
 <!-- ====================================================== -->
+{% if report.modules.ssl %}
+
+<div class="result-card">
+
+<h2>SSL Certificate</h2>
+
+{% if report.modules.ssl.error %}
+
+<div class="error-box">
+
+<h3>Module Failed</h3>
+
+<p>{{ report.modules.ssl.error }}</p>
+
+</div>
+
+{% else %}
 
 {% if report.modules.ssl %}
 
@@ -761,9 +877,31 @@ Subject Alternative Names (SAN)
 </div>
 
 {% endif %}
+{% endif %}
+
+</div>
+
+{% endif %}
 <!-- ====================================================== -->
 <!-- SECURITY HEADERS -->
 <!-- ====================================================== -->
+{% if report.modules.headers %}
+
+<div class="result-card">
+
+<h2>Security Headers</h2>
+
+{% if report.modules.headers.error %}
+
+<div class="error-box">
+
+<h3>Module Failed</h3>
+
+<p>{{ report.modules.headers.error }}</p>
+
+</div>
+
+{% else %}
 
 {% if report.modules.headers %}
 
@@ -850,12 +988,34 @@ Subject Alternative Names (SAN)
 </div>
 
 {% endif %}
+{% endif %}
+
+</div>
+
+{% endif %}
 
 
 
 <!-- ====================================================== -->
 <!-- SUBDOMAIN ENUMERATION -->
 <!-- ====================================================== -->
+{% if report.modules.subdomains %}
+
+<div class="result-card">
+
+<h2>Subdomain Enumeration</h2>
+
+{% if report.modules.subdomains.error %}
+
+<div class="error-box">
+
+<h3>Module Failed</h3>
+
+<p>{{ report.modules.subdomains.error }}</p>
+
+</div>
+
+{% else %}
 
 {% if report.modules.subdomains %}
 
@@ -918,12 +1078,34 @@ Subject Alternative Names (SAN)
 </div>
 
 {% endif %}
+{% endif %}
+
+</div>
+
+{% endif %}
 
 
 
 <!-- ====================================================== -->
 <!-- GEOLOCATION -->
 <!-- ====================================================== -->
+{% if report.modules.geo %}
+
+<div class="result-card">
+
+<h2>Geolocation</h2>
+
+{% if report.modules.geo.error %}
+
+<div class="error-box">
+
+<h3>Module Failed</h3>
+
+<p>{{ report.modules.geo.error }}</p>
+
+</div>
+
+{% else %}
 
 {% if report.modules.geo %}
 
@@ -1015,6 +1197,11 @@ Subject Alternative Names (SAN)
 </div>
 
 {% endif %}
+{% endif %}
+
+</div>
+
+{% endif %}
 
 
 
@@ -1046,7 +1233,7 @@ Download JSON
 
 <button
 class="primary-btn"
-onclick="window.print()">
+onclick="printing()">
 
 Print Report
 
@@ -1058,6 +1245,17 @@ Print Report
 
 {{ report|tojson }}
 
+</script>
+<script>
+    function printing(){
+
+    
+    document.body.classList.add("print-mode");
+
+window.print();
+
+document.body.classList.remove("print-mode");
+    }
 </script>
 
 <script>
@@ -1106,9 +1304,11 @@ CyberSentinel Unified Report
 
 <p>
 
-Generated using the Unified Scanner Engine.
+Assessment Summary
 
-This report consolidates reconnaissance findings from all selected CyberSentinel modules into a single intelligence dashboard.
+CyberSentinel successfully completed reconnaissance against the requested target.
+
+This report consolidates results from all selected reconnaissance modules. Individual module failures are isolated and reported without interrupting the overall assessment.
 
 </p>
 
