@@ -14,6 +14,39 @@ import os
 
 app = Flask(__name__)
 
+# The Vercel Hobby deployment is for evaluation/demo use. Keep the full scanner
+# available in the primary deployment while disabling active scan submissions
+# in this hosted showcase.
+DEMO_MODE = os.environ.get("CYBERSENTINEL_DEMO_MODE", "").strip().lower() in {
+    "1", "true", "yes"
+}
+DEMO_BLOCKED_PATHS = {
+    "/portscan",
+    "/ping",
+    "/subdomain",
+    "/ssl",
+    "/headers",
+    "/unified",
+    "/attack-surface",
+}
+
+
+@app.before_request
+def restrict_active_scans_in_demo():
+    if (
+        DEMO_MODE
+        and request.method == "POST"
+        and request.path in DEMO_BLOCKED_PATHS
+    ):
+        return render_template(
+            "error.html",
+            message=(
+                "Active network-scanning submissions are disabled in this "
+                "temporary Vercel evaluation demo. Use the primary CyberSentinel "
+                "deployment for authorized live scans."
+            ),
+        ), 403
+
 @app.route("/")
 def index():
     return render_template("index.html")
