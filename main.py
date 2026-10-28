@@ -17,9 +17,10 @@ app = Flask(__name__)
 # The Vercel Hobby deployment is for evaluation/demo use. Keep the full scanner
 # available in the primary deployment while disabling active scan submissions
 # in this hosted showcase.
-DEMO_MODE = os.environ.get("CYBERSENTINEL_DEMO_MODE", "").strip().lower() in {
-    "1", "true", "yes"
-}
+DEMO_MODE = os.environ.get(
+    "CYBERSENTINEL_DEMO_MODE",
+    "true" if os.environ.get("VERCEL") else "",
+).strip().lower() in {"1", "true", "yes"}
 DEMO_BLOCKED_PATHS = {
     "/portscan",
     "/ping",
