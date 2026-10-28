@@ -23,29 +23,40 @@ DEMO_MODE = os.environ.get("CYBERSENTINEL_DEMO_MODE", "").strip().lower() in {
 DEMO_BLOCKED_PATHS = {
     "/portscan",
     "/ping",
-    "/subdomain",
-    "/ssl",
-    "/headers",
-    "/unified",
     "/attack-surface",
 }
 
 
 @app.before_request
 def restrict_active_scans_in_demo():
-    if (
-        DEMO_MODE
-        and request.method == "POST"
-        and request.path in DEMO_BLOCKED_PATHS
-    ):
+    if not DEMO_MODE or request.method != "POST":
+        return None
+
+    # The unified scanner can run user-selected modules; block only submissions
+    # that request active TCP reachability or port scanning in the demo.
+    if request.path == "/unified":
+        selected_modules = set(request.form.getlist("modules"))
+        if selected_modules.intersection({"ports", "ping"}):
+            return render_template(
+                "error.html",
+                message=(
+                    "Port scanning and TCP reachability tests are disabled in "
+                    "this temporary Vercel evaluation demo. Passive lookup modules "
+                    "remain available here."
+                ),
+            ), 403
+
+    if request.path in DEMO_BLOCKED_PATHS:
         return render_template(
             "error.html",
             message=(
-                "Active network-scanning submissions are disabled in this "
-                "temporary Vercel evaluation demo. Use the primary CyberSentinel "
-                "deployment for authorized live scans."
+                "Active network scanning is disabled in this temporary Vercel "
+                "evaluation demo. DNS, WHOIS, SSL, security-header, geolocation, "
+                "and public subdomain lookups remain available."
             ),
         ), 403
+
+    return None
 
 @app.route("/")
 def index():
